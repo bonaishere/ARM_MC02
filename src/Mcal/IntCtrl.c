@@ -1,7 +1,7 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
  *  -----------------------------------------------------------------------------------------------------------------*/
-/**        \file  IntCrtl.c
+/**        \file  IntCtrl.c
  *        \brief  Nested Vector Interrupt Controller Driver
  *
  *      \details  The Driver Configure All MCU interrupts Priority into gorups and subgroups
@@ -13,7 +13,7 @@
  *  INCLUDES
  *********************************************************************************************************************/
 #include "Std_Types.h"
-#include "IntCrtl.h"
+#include "IntCtrl.h"
 #include "Mcu_Hw.h"
 
 /**********************************************************************************************************************
@@ -42,7 +42,7 @@
 
 
 /******************************************************************************
-* \Syntax          : void IntCrtl_Init(void)                                      
+* \Syntax          : void IntCtrl_Init(void)                                      
 * \Description     : initialize Nvic\SCB Module by parsing the Configuration 
 *                    into Nvic\SCB registers                                    
 *                                                                             
@@ -52,7 +52,7 @@
 * \Parameters (out): None                                                      
 * \Return value:   : None
 *******************************************************************************/
-void IntCrtl_Init(void)
+void IntCtrl_Init(void)
 {
 
 	/*TODO Configure Grouping\SubGrouping System in APINT register in SCB*/
@@ -69,5 +69,5 @@ void IntCrtl_Init(void)
 }
 
 /**********************************************************************************************************************
- *  END OF FILE: IntCrtl.c
+ *  END OF FILE: IntCtrl.c
  *********************************************************************************************************************/
