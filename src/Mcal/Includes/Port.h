@@ -1,42 +1,33 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  IntCtrl.h
- *       Module:  IntCtrl
+ *         File:  <Write File Name>
+ *       Module:  -
  *
- *  Description:  header file for IntCtrl Module    
+ *  Description:  <Write File DESCRIPTION here>     
  *  
  *********************************************************************************************************************/
-#ifndef IntCtrl_H
-#define IntCtrl_H
+#ifndef PORT_H
+#define PORT_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
 #include "Std_Types.h"
-#include "IntCtrl_Types.h"
-#include "IntCtrl_Lcfg.h"
-#include "IntCtrl_Cfg.h"
- 
-/**********************************************************************************************************************
- * FUNCTION PROTOTYPES
- *********************************************************************************************************************/
- 
-/******************************************************************************
-* \Syntax          : void IntCrtl_Init(void)                                      
-* \Description     : initialize Nvic\SCB Module by parsing the Configuration 
-*                    into Nvic\SCB registers                                    
-*                                                                             
-* \Sync\Async      : Synchronous                                               
-* \Reentrancy      : Non Reentrant                                             
-* \Parameters (in) : None                     
-* \Parameters (out): None                                                      
-* \Return value:   : None
-*******************************************************************************/
-void IntCtrl_Init(void);
- 
-#endif  /* IntCrtl_H */
+#include "Port_Types.h"
+#include "Port_Lcfg.h"
 
 /**********************************************************************************************************************
- *  END OF FILE: IntCtrl.h
+ *  FUNCTION PROTOTYPES 
+ *********************************************************************************************************************/
+
+/*
+            function to initialize a specific port with parameters in an array os structs
+*/
+void Port_Init(const Port_ConfigType* ConfigPtr);
+ 
+#endif  /* FILE_PORT_H */
+
+/**********************************************************************************************************************
+ *  END OF FILE: Std_Types.h
  *********************************************************************************************************************/

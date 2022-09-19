@@ -5,7 +5,7 @@
  *    Component:  -
  *       Module:  -
  *
- *  Description:  Provision of Standard Types
+ *  Description:  standard data types used 
  *
  *********************************************************************************************************************/
 
@@ -34,6 +34,27 @@
 # define STD_ON       1u
 # define STD_OFF      0u
 
+/*
+            data types 
+*/
+
+typedef unsigned char         boolean;       /*        TRUE -> FALSE           */
+
+typedef signed char           sint8;         /*        -128 -> +127            */
+typedef unsigned char         uint8;         /*           0 -> 255             */
+typedef signed short          sint16;        /*      -32768 -> +32767          */
+typedef unsigned short        uint16;        /*           0 -> 65535           */
+typedef signed long           sint32;        /* -2147483648 -> +2147483647     */
+typedef unsigned long         uint32;        /*           0 -> 4294967295      */
+
+typedef float                 float32;
+typedef double                float64;
+
+
+#define SETBIT(REG,BIT) ((REG)|= (1<<(BIT))) // to set register bin bit to high
+#define CLEARBIT(REG,BIT) ((REG)&= (~(1<<(BIT)))) //to set register bin bit to low
+#define GETBIT(REG,BIT) ((REG) & (1<<(BIT))) // to read the value of a specific bit in a specific register
+#define TOGLBIT(REG,BIT) ((REG)^= (1<<(BIT))) // to togle value of a specific bit in a specific register
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
@@ -42,14 +63,6 @@ typedef uint8 Std_ReturnType;
 #define E_OK          0u
 #define E_NOT_OK      1u
 
-/**********************************************************************************************************************
- *  GLOBAL DATA PROTOTYPES
- *********************************************************************************************************************/
-
- 
-/**********************************************************************************************************************
- *  GLOBAL FUNCTION PROTOTYPES
- *********************************************************************************************************************/
 
 
 #endif /* STD_TYPES_H */

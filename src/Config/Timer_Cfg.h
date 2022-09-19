@@ -1,42 +1,32 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  IntCtrl.h
- *       Module:  IntCtrl
+ *         File:  <Write File Name>
+ *       Module:  -
  *
- *  Description:  header file for IntCtrl Module    
+ *  Description:  <Write File DESCRIPTION here>     
  *  
  *********************************************************************************************************************/
-#ifndef IntCtrl_H
-#define IntCtrl_H
+#ifndef TIMER_CFG_H
+#define TIMER_CFG_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
 #include "Std_Types.h"
-#include "IntCtrl_Types.h"
-#include "IntCtrl_Lcfg.h"
-#include "IntCtrl_Cfg.h"
- 
-/**********************************************************************************************************************
- * FUNCTION PROTOTYPES
- *********************************************************************************************************************/
- 
-/******************************************************************************
-* \Syntax          : void IntCrtl_Init(void)                                      
-* \Description     : initialize Nvic\SCB Module by parsing the Configuration 
-*                    into Nvic\SCB registers                                    
-*                                                                             
-* \Sync\Async      : Synchronous                                               
-* \Reentrancy      : Non Reentrant                                             
-* \Parameters (in) : None                     
-* \Parameters (out): None                                                      
-* \Return value:   : None
-*******************************************************************************/
-void IntCtrl_Init(void);
- 
-#endif  /* IntCrtl_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: IntCtrl.h
+ *  GLOBAL CONSTANT MACROS
+ *********************************************************************************************************************/
+#define GPT_PREDEF_TIMER_100US_32BIT_ENABLE						STD_ON // make it enabled 
+#define GPT_PREDEF_TIMER_1US_16BIT_ENABLE	                  	STD_ON
+#define GPT_PREDEF_TIMER_1US_24BIT_ENABLE	                  	STD_ON
+#define GPT_PREDEF_TIMER_1US_32BIT_ENABLE	                  	STD_ON
+#define GPT_PREDEF_TIMER_1US_32BIT_ENABLE	                  	STD_ON
+
+ 
+#endif  /* TIMER_CFG_H */
+
+/**********************************************************************************************************************
+ *  END OF FILE: Std_Types.h
  *********************************************************************************************************************/
