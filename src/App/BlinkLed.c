@@ -1,9 +1,9 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
  *  -----------------------------------------------------------------------------------------------------------------*/
-/**        \file  Dio.c
- *        \brief  INPUT OUTPUT Driver
- *		\details: no configuration is needed for this driver as it is used to read and write from and to Dio oin
+/**        \file  BlinkLed.c
+ *        \brief  App
+ *		\details: this file contains the implementaion of BlinkLed app
  *        
  *
  *********************************************************************************************************************/
@@ -11,10 +11,13 @@
 /**********************************************************************************************************************
  *  INCLUDES
  *********************************************************************************************************************/
-#include "Std_Types.h"
-#include "Macros.h"
+
+#include "system_TM4C123.h"
+#include "IntCtrl.h"
+#include "Port.h"
 #include "Dio.h"
-#include "Mcu_Hw.h"
+#include "Gpt.h"
+#include "BlinkLed.h"
 
 /**********************************************************************************************************************
 *  LOCAL MACROS CONSTANT\FUNCTION
@@ -23,7 +26,9 @@
 /**********************************************************************************************************************
  *  LOCAL DATA 
  *********************************************************************************************************************/
-
+volatile static uint8_t flag = FALSE;
+static uint32_t SetOnTime = 0;
+static uint32_t SetOffTime = 0;
 /**********************************************************************************************************************
  *  GLOBAL DATA
  *********************************************************************************************************************/
@@ -33,6 +38,16 @@
  *********************************************************************************************************************/
 
 /**********************************************************************************************************************
+ *  GLOBAL DATA TYPES AND STRUCTURES
+ *********************************************************************************************************************/
+
+typedef enum
+{
+	LED_OFF,
+	LED_ON,
+	STOP
+}LedState;
+/**********************************************************************************************************************
  *  LOCAL FUNCTIONS
  *********************************************************************************************************************/
 
@@ -41,75 +56,144 @@
  *********************************************************************************************************************/
 
 /******************************************************************************
-* \Syntax          : Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)                                      
-* \Description     : Returns the value of the specified DIO channel.                                
+* \Syntax          : void BlinkLed_Init(void)                                      
+* \Description     : Initializes the Led Port pin                                
 *                                                                             
 * \Sync\Async      : Synchronous                                               
 * \Reentrancy      : Reentrant                                             
-* \Parameters (in) : ChannelId ID of DIO channel                     
-* \Parameters (out): None                                                      
-* \Return value:   : Dio_LevelType STD_HIGH The physical level of the corresponding 
-											Pin is STD_HIGH 
-										STD_LOW The physical level of the corresponding Pin is STD_LOW
-*******************************************************************************/
-Dio_LevelType Dio_ReadChannel(Port_ChannelType ChannelId){
-	return  (Dio_LevelType)PORTDATA(ChannelId.Port+ChannelId.Pin); //GET_BIT(PortDATA(ChannelId.Port),ChannelId.Pin);
-}
-/******************************************************************************
-* \Syntax          : void Dio_WriteChannel(Dio_ChannelType ChannelId,Dio_LevelType Level)                                     
-* \Description     : Service to set a level of a channel.                                   
-*                                                                             
-* \Sync\Async      : Synchronous                                               
-* \Reentrancy      : Reentrant                                             
-* \Parameters (in) : ChannelId  ID of DIO channel   
-*									 : Level      Value to be written
+* \Parameters (in) : None                    
 * \Parameters (out): None                                                      
 * \Return value:   : None
 *******************************************************************************/
-void Dio_WriteChannel(Port_ChannelType ChannelId,Dio_LevelType Level){
-	ASSIGN_BIT(PORTDATA(ChannelId.Port),ChannelId.Pin,Level);
+
+void BlinkLed_Init(void)
+{
+	Gpt_Init(&Gpt_Cfg);
+	Gpt_EnableNotification(TIMER0);
+	Gpt_CallbackRegister(TIMER0,Timer0_Handler);
 }
 /******************************************************************************
-* \Syntax          : void Port_Init(const Port_ConfigType*ConfigPtr)                                      
-* \Description     : Returns the level of all channels of that port.                                   
+* \Syntax          : void BlinkLed_SetOnTime(uint32_t Time)                                    
+* \Description     : Set the On time in sec for LED                                   
 *                                                                             
 * \Sync\Async      : Synchronous                                               
 * \Reentrancy      : Reentrant                                             
-* \Parameters (in) : PortId  ID of DIO Port                    
-* \Parameters (out): None                                                      
-* \Return value:   : Dio_PortLevelType Level of all channels of that port
-*******************************************************************************/
-Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId){
-	return (Dio_PortLevelType)PORTDATA(PortId);
-}
-/******************************************************************************
-* \Syntax          : void Port_Init(const Port_ConfigType*ConfigPtr)                                      
-* \Description     : Service to set a value of the port.
-*                                                                             
-* \Sync\Async      : Synchronous                                               
-* \Reentrancy      : Reentrant                                             
-* \Parameters (in) : PortId  ID of DIO Port
-*									 : Level   Value to be written
+* \Parameters (in) : Time	required time in sec 
 * \Parameters (out): None                                                      
 * \Return value:   : None
 *******************************************************************************/
-void Dio_WritePort(Dio_PortType PortId,Dio_PortLevelType Level){
-	PORTDATA(PortId) = Level;
+void BlinkLed_SetOnTime(uint32_t Time)
+{
+	SetOnTime = Time;
 }
 /******************************************************************************
-* \Syntax          : void Port_Init(const Port_ConfigType*ConfigPtr)                                      
-* \Description     : Service to flip (change from 1 to 0 or from 0 to 1) the level 
-*											of a channel and return the level of the channel after flip.                                  
+* \Syntax          : void BlinkLed_SetOffTime(uint32_t Time)                                    
+* \Description     : Set the Off time in sec for LED                                   
 *                                                                             
 * \Sync\Async      : Synchronous                                               
 * \Reentrancy      : Reentrant                                             
-* \Parameters (in) : ChannelId  ID of DIO channel                    
+* \Parameters (in) : Time	required time in sec 
 * \Parameters (out): None                                                      
-* \Return value:   : Dio_LevelType STD_HIGH The physical level of the corresponding 
-											Pin is STD_HIGH 
-										STD_LOW The physical level of the corresponding Pin is STD_LOW
+* \Return value:   : None
 *******************************************************************************/
-Dio_LevelType Dio_FlipChannel(Port_ChannelType ChannelId){
-  Toggle_BIT(PORTDATA(ChannelId.Port),ChannelId.Pin);
-	return GET_BIT(PORTDATA(ChannelId.Port),ChannelId.Pin);
+void BlinkLed_SetOffTime(uint32_t Time)
+{
+	SetOffTime = Time;
+}
+/******************************************************************************
+* \Syntax          : void BlinkLed_Start(void)                                    
+* \Description     : make the LED strat blinking based on the OnTime and OffTime                                   
+*                                                                             
+* \Sync\Async      : Synchronous                                               
+* \Reentrancy      : Reentrant                                             
+* \Parameters (in) : None 
+* \Parameters (out): None                                                      
+* \Return value:   : None
+*******************************************************************************/
+void BlinkLed_Start(void)
+{
+	Gpt_StartTimer(TIMER0,1); //1 *(1/USER_FREQ_HZ) = 1ms
+}
+/******************************************************************************
+* \Syntax          : void BlinkLed_Stop(void)                                   
+* \Description     : Stops the LED blinking                                 
+*                                                                             
+* \Sync\Async      : Synchronous                                               
+* \Reentrancy      : Reentrant                                             
+* \Parameters (in) : None 
+* \Parameters (out): None                                                      
+* \Return value:   : None
+*******************************************************************************/
+void BlinkLed_Stop(void)
+{
+	Gpt_StopTimer(TIMER0);
+}
+/******************************************************************************
+* \Syntax          : void Timer0_Handler(void)                                   
+* \Description     : This the timer handler which is called by the Timer ISR through callback function                                
+*                                                                             
+* \Sync\Async      : Synchronous                                               
+* \Reentrancy      : Reentrant                                             
+* \Parameters (in) : None 
+* \Parameters (out): None                                                      
+* \Return value:   : None
+*******************************************************************************/
+void Timer0_Handler(void)
+{
+	flag = TRUE;
+}
+/******************************************************************************
+* \Syntax          : void BlinkLed_Run(void)                                  
+* \Description     : check for OnTime period and OffTime period and take required action to make LED blink                                   
+*                                                                             
+* \Sync\Async      : Synchronous                                               
+* \Reentrancy      : None Reentrant                                             
+* \Parameters (in) : None 
+* \Parameters (out): None                                                      
+* \Return value:   : None
+*******************************************************************************/
+
+void BlinkLed_Run(void)
+{	
+	static uint32_t ms_Counter = 0;
+	static uint32_t s_Counter = 0;
+	static volatile uint8_t state;
+	static uint32_t period = 0;
+	period = SetOnTime + SetOffTime;
+	if(TRUE == flag)
+	{
+		flag = FALSE;
+		ms_Counter++;
+	}
+	if(ms_Counter == 1000)
+	{
+		ms_Counter = 0;
+		s_Counter++;
+	}
+	if(s_Counter < SetOnTime)
+	{
+		state = LED_ON;
+	}
+	else if((s_Counter >= SetOnTime) && (s_Counter < period))
+	{
+		state = LED_OFF;
+	}
+	else if(s_Counter >= period)
+	{
+		s_Counter = 0;
+		state = STOP;
+	}
+	switch(state)
+	{
+		case LED_OFF:
+			Dio_WriteChannel(Channels[1].Channel,LOW);
+			break;
+		case LED_ON:
+			Dio_WriteChannel(Channels[1].Channel,HIGH);
+			break;
+		case STOP:
+			break;
+		default:
+			break;
+	}
 }

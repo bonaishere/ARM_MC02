@@ -1,418 +1,533 @@
-/**************************************************************************************************
- *	FILE DESCRIPTION
- *	-----------------------------------------------------------------------------------------------
- *	       File:	Mcu_Hw.h
- *	     Module:
+/**********************************************************************************************************************
+ *  FILE DESCRIPTION
+ *  -------------------------------------------------------------------------------------------------------------------
+ *         File:  Mcu_Hw.h
+ *       Module:  Mcu_Hw
  *
- *	Description:
- *
- *
- *************************************************************************************************/
+ *  Description:  header file for Registers definition    
+ *  
+ *********************************************************************************************************************/
 #ifndef MCU_HW_H
 #define MCU_HW_H
-/**************************************************************************************************
- *	INCLUDES
- *************************************************************************************************/
+
+/**********************************************************************************************************************
+ * INCLUDES
+ *********************************************************************************************************************/
 #include "Std_Types.h"
- 
-/**************************************************************************************************
- *	GLOBAL DATA TYPES AND STRUCTURES
- *************************************************************************************************/
 
-//Nested Vectored Interrupt Controller (NVIC) Registers
+
+/**********************************************************************************************************************
+ *  GLOBAL CONSTANT MACROS
+ *********************************************************************************************************************/
+#define PORT_APB	1
+#define PERI_BASE 0x40000000
+#define BITBAND_PERI_BASE 0x42000000
+#define BITBAND_PERI(a,b) (((BITBAND_PERI_BASE + (a-PERI_BASE)*32 + (b*4))))
+
+/**********************************************************************************************************************
+ *  GLOBAL DATA TYPES AND STRUCTURES
+ *********************************************************************************************************************/
+
+/*****************/
+/* System Control Registers*/
+/*****************/
+#define SYS_CTRL_BASE_ADD			0x400FE000UL
+typedef struct {                                    /*!< SYSCTL Structure                                                      */
+  __IO uint32_t  DID0;                              /*!< Device Identification 0                                               */
+  __IO uint32_t  DID1;                              /*!< Device Identification 1                                               */
+  __IO uint32_t  DC0;                               /*!< Device Capabilities 0                                                 */
+  __I  uint32_t  RESERVED;
+  __IO uint32_t  DC1;                               /*!< Device Capabilities 1                                                 */
+  __IO uint32_t  DC2;                               /*!< Device Capabilities 2                                                 */
+  __IO uint32_t  DC3;                               /*!< Device Capabilities 3                                                 */
+  __IO uint32_t  DC4;                               /*!< Device Capabilities 4                                                 */
+  __IO uint32_t  DC5;                               /*!< Device Capabilities 5                                                 */
+  __IO uint32_t  DC6;                               /*!< Device Capabilities 6                                                 */
+  __IO uint32_t  DC7;                               /*!< Device Capabilities 7                                                 */
+  __IO uint32_t  DC8;                               /*!< Device Capabilities 8                                                 */
+  __IO uint32_t  PBORCTL;                           /*!< Brown-Out Reset Control                                               */
+  __I  uint32_t  RESERVED1[3];
+  __IO uint32_t  SRCR0;                             /*!< Software Reset Control 0                                              */
+  __IO uint32_t  SRCR1;                             /*!< Software Reset Control 1                                              */
+  __IO uint32_t  SRCR2;                             /*!< Software Reset Control 2                                              */
+  __I  uint32_t  RESERVED2;
+  __IO uint32_t  RIS;                               /*!< Raw Interrupt Status                                                  */
+  __IO uint32_t  IMC;                               /*!< Interrupt Mask Control                                                */
+  __IO uint32_t  MISC;                              /*!< Masked Interrupt Status and Clear                                     */
+  __IO uint32_t  RESC;                              /*!< Reset Cause                                                           */
+  __IO uint32_t  RCC;                               /*!< Run-Mode Clock Configuration                                          */
+  __I  uint32_t  RESERVED3[2];
+  __IO uint32_t  PORTHBCTL;                         /*!< PORT High-Performance Bus Control                                     */
+  __IO uint32_t  RCC2;                              /*!< Run-Mode Clock Configuration 2                                        */
+  __I  uint32_t  RESERVED4[2];
+  __IO uint32_t  MOSCCTL;                           /*!< Main Oscillator Control                                               */
+  __I  uint32_t  RESERVED5[32];
+  __IO uint32_t  RCGC0;                             /*!< Run Mode Clock Gating Control Register 0                              */
+  __IO uint32_t  RCGC1;                             /*!< Run Mode Clock Gating Control Register 1                              */
+  __IO uint32_t  RCGC2;                             /*!< Run Mode Clock Gating Control Register 2                              */
+  __I  uint32_t  RESERVED6;
+  __IO uint32_t  SCGC0;                             /*!< Sleep Mode Clock Gating Control Register 0                            */
+  __IO uint32_t  SCGC1;                             /*!< Sleep Mode Clock Gating Control Register 1                            */
+  __IO uint32_t  SCGC2;                             /*!< Sleep Mode Clock Gating Control Register 2                            */
+  __I  uint32_t  RESERVED7;
+  __IO uint32_t  DCGC0;                             /*!< Deep Sleep Mode Clock Gating Control Register 0                       */
+  __IO uint32_t  DCGC1;                             /*!< Deep-Sleep Mode Clock Gating Control Register 1                       */
+  __IO uint32_t  DCGC2;                             /*!< Deep Sleep Mode Clock Gating Control Register 2                       */
+  __I  uint32_t  RESERVED8[6];
+  __IO uint32_t  DSLPCLKCFG;                        /*!< Deep Sleep Clock Configuration                                        */
+  __I  uint32_t  RESERVED9;
+  __IO uint32_t  SYSPROP;                           /*!< System Properties                                                     */
+  __IO uint32_t  PIOSCCAL;                          /*!< Precision Internal Oscillator Calibration                             */
+  __IO uint32_t  PIOSCSTAT;                         /*!< Precision Internal Oscillator Statistics                              */
+  __I  uint32_t  RESERVED10[2];
+  __IO uint32_t  PLLFREQ0;                          /*!< PLL Frequency 0                                                       */
+  __IO uint32_t  PLLFREQ1;                          /*!< PLL Frequency 1                                                       */
+  __IO uint32_t  PLLSTAT;                           /*!< PLL Status                                                            */
+  __I  uint32_t  RESERVED11[7];
+  __IO uint32_t  SLPPWRCFG;                         /*!< Sleep Power Configuration                                             */
+  __IO uint32_t  DSLPPWRCFG;                        /*!< Deep-Sleep Power Configuration                                        */
+  __IO uint32_t  DC9;                               /*!< Device Capabilities 9                                                 */
+  __I  uint32_t  RESERVED12[3];
+  __IO uint32_t  NVMSTAT;                           /*!< Non-Volatile Memory Information                                       */
+  __I  uint32_t  RESERVED13[4];
+  __IO uint32_t  LDOSPCTL;                          /*!< LDO Sleep Power Control                                               */
+  __I  uint32_t  RESERVED14;
+  __IO uint32_t  LDODPCTL;                          /*!< LDO Deep-Sleep Power Control                                          */
+  __I  uint32_t  RESERVED15[80];
+  __IO uint32_t  PPWD;                              /*!< Watchdog Timer Peripheral Present                                     */
+  __IO uint32_t  PPTIMER;                           /*!< 16/32-Bit General-Purpose Timer Peripheral Present                    */
+  __IO uint32_t  PPPORT;                            /*!< General-Purpose Input/Output Peripheral Present                       */
+  __IO uint32_t  PPDMA;                             /*!< Micro Direct Memory Access Peripheral Present                         */
+  __I  uint32_t  RESERVED16;
+  __IO uint32_t  PPHIB;                             /*!< Hibernation Peripheral Present                                        */
+  __IO uint32_t  PPUART;                            /*!< Universal Asynchronous Receiver/Transmitter Peripheral Present        */
+  __IO uint32_t  PPSSI;                             /*!< Synchronous Serial Interface Peripheral Present                       */
+  __IO uint32_t  PPI2C;                             /*!< Inter-Integrated Circuit Peripheral Present                           */
+  __I  uint32_t  RESERVED17;
+  __IO uint32_t  PPUSB;                             /*!< Universal Serial Bus Peripheral Present                               */
+  __I  uint32_t  RESERVED18[2];
+  __IO uint32_t  PPCAN;                             /*!< Controller Area Network Peripheral Present                            */
+  __IO uint32_t  PPADC;                             /*!< Analog-to-Digital Converter Peripheral Present                        */
+  __IO uint32_t  PPACMP;                            /*!< Analog Comparator Peripheral Present                                  */
+  __IO uint32_t  PPPWM;                             /*!< Pulse Width Modulator Peripheral Present                              */
+  __IO uint32_t  PPQEI;                             /*!< Quadrature Encoder Interface Peripheral Present                       */
+  __I  uint32_t  RESERVED19[4];
+  __IO uint32_t  PPEEPROM;                          /*!< EEPROM Peripheral Present                                             */
+  __IO uint32_t  PPWTIMER;                          /*!< 32/64-Bit Wide General-Purpose Timer Peripheral Present               */
+  __I  uint32_t  RESERVED20[104];
+  __IO uint32_t  SRWD;                              /*!< Watchdog Timer Software Reset                                         */
+  __IO uint32_t  SRTIMER;                           /*!< 16/32-Bit General-Purpose Timer Software Reset                        */
+  __IO uint32_t  SRPORT;                            /*!< General-Purpose Input/Output Software Reset                           */
+  __IO uint32_t  SRDMA;                             /*!< Micro Direct Memory Access Software Reset                             */
+  __I  uint32_t  RESERVED21;
+  __IO uint32_t  SRHIB;                             /*!< Hibernation Software Reset                                            */
+  __IO uint32_t  SRUART;                            /*!< Universal Asynchronous Receiver/Transmitter Software Reset            */
+  __IO uint32_t  SRSSI;                             /*!< Synchronous Serial Interface Software Reset                           */
+  __IO uint32_t  SRI2C;                             /*!< Inter-Integrated Circuit Software Reset                               */
+  __I  uint32_t  RESERVED22;
+  __IO uint32_t  SRUSB;                             /*!< Universal Serial Bus Software Reset                                   */
+  __I  uint32_t  RESERVED23[2];
+  __IO uint32_t  SRCAN;                             /*!< Controller Area Network Software Reset                                */
+  __IO uint32_t  SRADC;                             /*!< Analog-to-Digital Converter Software Reset                            */
+  __IO uint32_t  SRACMP;                            /*!< Analog Comparator Software Reset                                      */
+  __IO uint32_t  SRPWM;                             /*!< Pulse Width Modulator Software Reset                                  */
+  __IO uint32_t  SRQEI;                             /*!< Quadrature Encoder Interface Software Reset                           */
+  __I  uint32_t  RESERVED24[4];
+  __IO uint32_t  SREEPROM;                          /*!< EEPROM Software Reset                                                 */
+  __IO uint32_t  SRWTIMER;                          /*!< 32/64-Bit Wide General-Purpose Timer Software Reset                   */
+  __I  uint32_t  RESERVED25[40];
+  __IO uint32_t  RCGCWD;                            /*!< Watchdog Timer Run Mode Clock Gating Control                          */
+  __IO uint32_t  RCGCTIMER;                         /*!< 16/32-Bit General-Purpose Timer Run Mode Clock Gating Control         */
+  __IO uint32_t  RCGCPORT;                          /*!< General-Purpose Input/Output Run Mode Clock Gating Control            */
+  __IO uint32_t  RCGCDMA;                           /*!< Micro Direct Memory Access Run Mode Clock Gating Control              */
+  __I  uint32_t  RESERVED26;
+  __IO uint32_t  RCGCHIB;                           /*!< Hibernation Run Mode Clock Gating Control                             */
+  __IO uint32_t  RCGCUART;                          /*!< Universal Asynchronous Receiver/Transmitter Run Mode Clock Gating
+                                                         Control                                                               */
+  __IO uint32_t  RCGCSSI;                           /*!< Synchronous Serial Interface Run Mode Clock Gating Control            */
+  __IO uint32_t  RCGCI2C;                           /*!< Inter-Integrated Circuit Run Mode Clock Gating Control                */
+  __I  uint32_t  RESERVED27;
+  __IO uint32_t  RCGCUSB;                           /*!< Universal Serial Bus Run Mode Clock Gating Control                    */
+  __I  uint32_t  RESERVED28[2];
+  __IO uint32_t  RCGCCAN;                           /*!< Controller Area Network Run Mode Clock Gating Control                 */
+  __IO uint32_t  RCGCADC;                           /*!< Analog-to-Digital Converter Run Mode Clock Gating Control             */
+  __IO uint32_t  RCGCACMP;                          /*!< Analog Comparator Run Mode Clock Gating Control                       */
+  __IO uint32_t  RCGCPWM;                           /*!< Pulse Width Modulator Run Mode Clock Gating Control                   */
+  __IO uint32_t  RCGCQEI;                           /*!< Quadrature Encoder Interface Run Mode Clock Gating Control            */
+  __I  uint32_t  RESERVED29[4];
+  __IO uint32_t  RCGCEEPROM;                        /*!< EEPROM Run Mode Clock Gating Control                                  */
+  __IO uint32_t  RCGCWTIMER;                        /*!< 32/64-Bit Wide General-Purpose Timer Run Mode Clock Gating Control    */
+  __I  uint32_t  RESERVED30[40];
+  __IO uint32_t  SCGCWD;                            /*!< Watchdog Timer Sleep Mode Clock Gating Control                        */
+  __IO uint32_t  SCGCTIMER;                         /*!< 16/32-Bit General-Purpose Timer Sleep Mode Clock Gating Control       */
+  __IO uint32_t  SCGCPORT;                          /*!< General-Purpose Input/Output Sleep Mode Clock Gating Control          */
+  __IO uint32_t  SCGCDMA;                           /*!< Micro Direct Memory Access Sleep Mode Clock Gating Control            */
+  __I  uint32_t  RESERVED31;
+  __IO uint32_t  SCGCHIB;                           /*!< Hibernation Sleep Mode Clock Gating Control                           */
+  __IO uint32_t  SCGCUART;                          /*!< Universal Asynchronous Receiver/Transmitter Sleep Mode Clock
+                                                         Gating Control                                                        */
+  __IO uint32_t  SCGCSSI;                           /*!< Synchronous Serial Interface Sleep Mode Clock Gating Control          */
+  __IO uint32_t  SCGCI2C;                           /*!< Inter-Integrated Circuit Sleep Mode Clock Gating Control              */
+  __I  uint32_t  RESERVED32;
+  __IO uint32_t  SCGCUSB;                           /*!< Universal Serial Bus Sleep Mode Clock Gating Control                  */
+  __I  uint32_t  RESERVED33[2];
+  __IO uint32_t  SCGCCAN;                           /*!< Controller Area Network Sleep Mode Clock Gating Control               */
+  __IO uint32_t  SCGCADC;                           /*!< Analog-to-Digital Converter Sleep Mode Clock Gating Control           */
+  __IO uint32_t  SCGCACMP;                          /*!< Analog Comparator Sleep Mode Clock Gating Control                     */
+  __IO uint32_t  SCGCPWM;                           /*!< Pulse Width Modulator Sleep Mode Clock Gating Control                 */
+  __IO uint32_t  SCGCQEI;                           /*!< Quadrature Encoder Interface Sleep Mode Clock Gating Control          */
+  __I  uint32_t  RESERVED34[4];
+  __IO uint32_t  SCGCEEPROM;                        /*!< EEPROM Sleep Mode Clock Gating Control                                */
+  __IO uint32_t  SCGCWTIMER;                        /*!< 32/64-Bit Wide General-Purpose Timer Sleep Mode Clock Gating
+                                                         Control                                                               */
+  __I  uint32_t  RESERVED35[40];
+  __IO uint32_t  DCGCWD;                            /*!< Watchdog Timer Deep-Sleep Mode Clock Gating Control                   */
+  __IO uint32_t  DCGCTIMER;                         /*!< 16/32-Bit General-Purpose Timer Deep-Sleep Mode Clock Gating
+                                                         Control                                                               */
+  __IO uint32_t  DCGCPORT;                          /*!< General-Purpose Input/Output Deep-Sleep Mode Clock Gating Control     */
+  __IO uint32_t  DCGCDMA;                           /*!< Micro Direct Memory Access Deep-Sleep Mode Clock Gating Control       */
+  __I  uint32_t  RESERVED36;
+  __IO uint32_t  DCGCHIB;                           /*!< Hibernation Deep-Sleep Mode Clock Gating Control                      */
+  __IO uint32_t  DCGCUART;                          /*!< Universal Asynchronous Receiver/Transmitter Deep-Sleep Mode
+                                                         Clock Gating Control                                                  */
+  __IO uint32_t  DCGCSSI;                           /*!< Synchronous Serial Interface Deep-Sleep Mode Clock Gating Control     */
+  __IO uint32_t  DCGCI2C;                           /*!< Inter-Integrated Circuit Deep-Sleep Mode Clock Gating Control         */
+  __I  uint32_t  RESERVED37;
+  __IO uint32_t  DCGCUSB;                           /*!< Universal Serial Bus Deep-Sleep Mode Clock Gating Control             */
+  __I  uint32_t  RESERVED38[2];
+  __IO uint32_t  DCGCCAN;                           /*!< Controller Area Network Deep-Sleep Mode Clock Gating Control          */
+  __IO uint32_t  DCGCADC;                           /*!< Analog-to-Digital Converter Deep-Sleep Mode Clock Gating Control      */
+  __IO uint32_t  DCGCACMP;                          /*!< Analog Comparator Deep-Sleep Mode Clock Gating Control                */
+  __IO uint32_t  DCGCPWM;                           /*!< Pulse Width Modulator Deep-Sleep Mode Clock Gating Control            */
+  __IO uint32_t  DCGCQEI;                           /*!< Quadrature Encoder Interface Deep-Sleep Mode Clock Gating Control     */
+  __I  uint32_t  RESERVED39[4];
+  __IO uint32_t  DCGCEEPROM;                        /*!< EEPROM Deep-Sleep Mode Clock Gating Control                           */
+  __IO uint32_t  DCGCWTIMER;                        /*!< 32/64-Bit Wide General-Purpose Timer Deep-Sleep Mode Clock Gating
+                                                         Control                                                               */
+  __I  uint32_t  RESERVED40[104];
+  __IO uint32_t  PRWD;                              /*!< Watchdog Timer Peripheral Ready                                       */
+  __IO uint32_t  PRTIMER;                           /*!< 16/32-Bit General-Purpose Timer Peripheral Ready                      */
+  __IO uint32_t  PRPORT;                            /*!< General-Purpose Input/Output Peripheral Ready                         */
+  __IO uint32_t  PRDMA;                             /*!< Micro Direct Memory Access Peripheral Ready                           */
+  __I  uint32_t  RESERVED41;
+  __IO uint32_t  PRHIB;                             /*!< Hibernation Peripheral Ready                                          */
+  __IO uint32_t  PRUART;                            /*!< Universal Asynchronous Receiver/Transmitter Peripheral Ready          */
+  __IO uint32_t  PRSSI;                             /*!< Synchronous Serial Interface Peripheral Ready                         */
+  __IO uint32_t  PRI2C;                             /*!< Inter-Integrated Circuit Peripheral Ready                             */
+  __I  uint32_t  RESERVED42;
+  __IO uint32_t  PRUSB;                             /*!< Universal Serial Bus Peripheral Ready                                 */
+  __I  uint32_t  RESERVED43[2];
+  __IO uint32_t  PRCAN;                             /*!< Controller Area Network Peripheral Ready                              */
+  __IO uint32_t  PRADC;                             /*!< Analog-to-Digital Converter Peripheral Ready                          */
+  __IO uint32_t  PRACMP;                            /*!< Analog Comparator Peripheral Ready                                    */
+  __IO uint32_t  PRPWM;                             /*!< Pulse Width Modulator Peripheral Ready                                */
+  __IO uint32_t  PRQEI;                             /*!< Quadrature Encoder Interface Peripheral Ready                         */
+  __I  uint32_t  RESERVED44[4];
+  __IO uint32_t  PREEPROM;                          /*!< EEPROM Peripheral Ready                                               */
+  __IO uint32_t  PRWTIMER;                          /*!< 32/64-Bit Wide General-Purpose Timer Peripheral Ready                 */
+} Sysctl_Type;
+/* ================================================================================ */
+/* ================                     TIMER0                     ================ */
+/* ================================================================================ */
+
+
+/**
+  * @brief Register map for TIMER0 peripheral (TIMER0)
+  */
+
+typedef struct {                                    /*!< TIMER0 Structure                                                      */
+  __IO uint32_t  CFG;                               /*!< GPTM Configuration                                                    */
+  __IO uint32_t  TAMR;                              /*!< GPTM Timer A Mode                                                     */
+  __IO uint32_t  TBMR;                              /*!< GPTM Timer B Mode                                                     */
+  __IO uint32_t  CTL;                               /*!< GPTM Control                                                          */
+  __IO uint32_t  SYNC;                              /*!< GPTM Synchronize                                                      */
+  __I  uint32_t  RESERVED;
+  __IO uint32_t  IMR;                               /*!< GPTM Interrupt Mask                                                   */
+  __IO uint32_t  RIS;                               /*!< GPTM Raw Interrupt Status                                             */
+  __IO uint32_t  MIS;                               /*!< GPTM Masked Interrupt Status                                          */
+  __O  uint32_t  ICR;                               /*!< GPTM Interrupt Clear                                                  */
+  __IO uint32_t  TAILR;                             /*!< GPTM Timer A Interval Load                                            */
+  __IO uint32_t  TBILR;                             /*!< GPTM Timer B Interval Load                                            */
+  __IO uint32_t  TAMATCHR;                          /*!< GPTM Timer A Match                                                    */
+  __IO uint32_t  TBMATCHR;                          /*!< GPTM Timer B Match                                                    */
+  __IO uint32_t  TAPR;                              /*!< GPTM Timer A Prescale                                                 */
+  __IO uint32_t  TBPR;                              /*!< GPTM Timer B Prescale                                                 */
+  __IO uint32_t  TAPMR;                             /*!< GPTM TimerA Prescale Match                                            */
+  __IO uint32_t  TBPMR;                             /*!< GPTM TimerB Prescale Match                                            */
+  __IO uint32_t  TAR;                               /*!< GPTM Timer A                                                          */
+  __IO uint32_t  TBR;                               /*!< GPTM Timer B                                                          */
+  __IO uint32_t  TAV;                               /*!< GPTM Timer A Value                                                    */
+  __IO uint32_t  TBV;                               /*!< GPTM Timer B Value                                                    */
+  __IO uint32_t  RTCPD;                             /*!< GPTM RTC Predivide                                                    */
+  __IO uint32_t  TAPS;                              /*!< GPTM Timer A Prescale Snapshot                                        */
+  __IO uint32_t  TBPS;                              /*!< GPTM Timer B Prescale Snapshot                                        */
+  __IO uint32_t  TAPV;                              /*!< GPTM Timer A Prescale Value                                           */
+  __IO uint32_t  TBPV;                              /*!< GPTM Timer B Prescale Value                                           */
+  __I  uint32_t  RESERVED1[981];
+  __IO uint32_t  PP;                                /*!< GPTM Peripheral Properties                                            */
+} TIMER0_Type;
+
+
+/* ================================================================================ */
+/* ================                     WTIMER0                    ================ */
+/* ================================================================================ */
+
+
+/**
+  * @brief Register map for WTIMER0 peripheral (WTIMER0)
+  */
+
+typedef struct {                                    /*!< WTIMER0 Structure                                                     */
+  __IO uint32_t  CFG;                               /*!< GPTM Configuration                                                    */
+  __IO uint32_t  TAMR;                              /*!< GPTM Timer A Mode                                                     */
+  __IO uint32_t  TBMR;                              /*!< GPTM Timer B Mode                                                     */
+  __IO uint32_t  CTL;                               /*!< GPTM Control                                                          */
+  __IO uint32_t  SYNC;                              /*!< GPTM Synchronize                                                      */
+  __I  uint32_t  RESERVED;
+  __IO uint32_t  IMR;                               /*!< GPTM Interrupt Mask                                                   */
+  __IO uint32_t  RIS;                               /*!< GPTM Raw Interrupt Status                                             */
+  __IO uint32_t  MIS;                               /*!< GPTM Masked Interrupt Status                                          */
+  __O  uint32_t  ICR;                               /*!< GPTM Interrupt Clear                                                  */
+  __IO uint32_t  TAILR;                             /*!< GPTM Timer A Interval Load                                            */
+  __IO uint32_t  TBILR;                             /*!< GPTM Timer B Interval Load                                            */
+  __IO uint32_t  TAMATCHR;                          /*!< GPTM Timer A Match                                                    */
+  __IO uint32_t  TBMATCHR;                          /*!< GPTM Timer B Match                                                    */
+  __IO uint32_t  TAPR;                              /*!< GPTM Timer A Prescale                                                 */
+  __IO uint32_t  TBPR;                              /*!< GPTM Timer B Prescale                                                 */
+  __IO uint32_t  TAPMR;                             /*!< GPTM TimerA Prescale Match                                            */
+  __IO uint32_t  TBPMR;                             /*!< GPTM TimerB Prescale Match                                            */
+  __IO uint32_t  TAR;                               /*!< GPTM Timer A                                                          */
+  __IO uint32_t  TBR;                               /*!< GPTM Timer B                                                          */
+  __IO uint32_t  TAV;                               /*!< GPTM Timer A Value                                                    */
+  __IO uint32_t  TBV;                               /*!< GPTM Timer B Value                                                    */
+  __IO uint32_t  RTCPD;                             /*!< GPTM RTC Predivide                                                    */
+  __IO uint32_t  TAPS;                              /*!< GPTM Timer A Prescale Snapshot                                        */
+  __IO uint32_t  TBPS;                              /*!< GPTM Timer B Prescale Snapshot                                        */
+  __IO uint32_t  TAPV;                              /*!< GPTM Timer A Prescale Value                                           */
+  __IO uint32_t  TBPV;                              /*!< GPTM Timer B Prescale Value                                           */
+  __I  uint32_t  RESERVED1[981];
+  __IO uint32_t  PP;                                /*!< GPTM Peripheral Properties                                            */
+} WTIMER0_Type;
+
+/****************************
+*		NVICT
+*******************************/
+/* -------------------------  Interrupt Number Definition  ------------------------ */
+
+
+typedef struct 
+{
+    uint32_t VECACT   :8;
+    uint32_t          :3;
+    uint32_t RETBASE  :1;
+    uint32_t VECPEND  :8;
+    uint32_t          :2;
+    uint32_t ISRPEND  :1;
+    uint32_t ISRPRE   :1;
+    uint32_t          :1;
+    uint32_t PENDSTCLR:1;
+    uint32_t PENDSTSET:1;
+    uint32_t UNPENDSV :1;
+    uint32_t PENDSV   :1;
+    uint32_t          :2;
+    uint32_t NMISET   :1; 
+}INTCTRL_BF;
+typedef union 
+{
+    uint32_t R;
+    INTCTRL_BF B;
+}INTCTRL_Tag;
+/*
 typedef struct
 {
-     uint32 EN[5];
-     uint32 reserved0[27];
-     uint32 DIS[5];
-     uint32 reserved1[27];
-     uint32 PEND[5];
-     uint32 reserved2[27];
-     uint32 UNPEND[5];
-     uint32 reserved3[27];
-     uint32 ACTIVE[5];
-     uint32 reserved4[59];
-
-     union
-     {
-     uint32 R;
-        struct             //the diadvantage of this way is that it will act in a wrong way 
-        {                           //if the compiler was Big Endian
-            uint32          :5;     // ":" it is used to give the var a bit field
-            uint32 INTA     :3;
-            uint32          :5;
-            uint32 INTB     :3;
-            uint32          :5;
-            uint32 INTC     :3;
-            uint32          :5;
-            uint32 INTD     :3;
-        }BF;
-     }PRI[35];
-
-     uint32 reserved5[669];
-     uint32 SWIDETRIG;
-} NVIC_Registers;
-
-
-// SCB registers
+	uint32_t 						:1;	//VECTRESET   This bit must be written as a 0
+	uint32_t 						:1;	//VECTCLRACT  This bit must be written as a 0
+	uint32_t SYSRESREQ	:1;
+	uint32_t 						:5;
+	uint32_t PRIGROUP		:3;
+	uint32_t 						:4;
+	uint32_t 						:1; //ENDIANESS	  The Tiva  C Series implementation uses only little-endian mode so this is cleared to 0
+	uint32_t VECTKEY		:16;
+}APINT_BF;
+typedef union 
+{
+	uint32_t R;
+	APINT_BF B;
+}APINT_Tag;
+*/
 typedef struct
 {
-    uint32 CPUID;
-
-    union
-    {
-        uint32 R;
-        struct             //the diadvantage of this way is that it will act in a wrong way 
-        {                           //if the compiler was Big Endian
-            uint32 VECACT   :8;     // ":" it is used to give the var a bit field
-            uint32          :3;
-            uint32 RETBASE  :1;
-            uint32 VECPEND  :8;
-            uint32          :2;
-            uint32 ISRPEND  :1;
-            uint32 ISRPRE   :1;
-            uint32          :1;
-            uint32 PENDSTCLR:1;
-            uint32 PENDSTSET:1;
-            uint32 UNPENDSV :1;
-            uint32 PENDSV   :1;
-            uint32          :2;
-            uint32 NMISET   :1;
-        }BF;
-    }INTCTRL;
-
-    uint32 VTABLE;
-
-    union
-    {
-        uint32 R;
-        struct             //the diadvantage of this way is that it will act in a wrong way 
-        {                           //if the compiler was Big Endian
-            uint32 VECTRESET    :1;     // ":" it is used to give the var a bit field
-            uint32 VECTCLRACT   :1;
-            uint32 SYSRESREQ    :1;
-            uint32              :5;
-            uint32 PRIGROUP     :3;
-            uint32              :4;
-            uint32 ENDIANESS    :1;
-            uint32 VECTKEY      :16;
-        }BF;
-    }APINT;
-
-    uint32 SYSCTRL;
-    uint32 CFGCTRL;
-    uint32 SYSPRI1;
-    uint32 SYSPRI2;
-    uint32 SYSPRI3;
-    uint32 SYSHNDCTRL;
-    uint32 FAULTSTAT;
-    uint32 HFAULTSTAT;
-    uint32 reserved2;
-    uint32 MMADDR;
-    uint32 FAULTADDR;
-}SCB_Registers;
-
-
-
-
-//GPIO
+	uint32_t 						:1;
+	uint32_t	SLEEPEXIT	:1;
+	uint32_t	SLEEPDEEP	:1;
+	uint32_t						:1;
+	uint32_t	SEVONPEND	:1;
+	uint32_t						:0;
+}SYSCTRL_BF;
+typedef union 
+{
+	uint32_t R;
+	SYSCTRL_BF B;
+}SYSCTRL_Tag;
 typedef struct
 {
-    uint32 GPIODATA[256];
-    uint32 GPIODIR;
-    uint32 GPIOIS;
-    uint32 GPIOIBE;
-    uint32 GPIOIEV;
-    uint32 GPIOIM;
-    uint32 GPIORIS;
-    uint32 GPIOMIS;
-    uint32 GPIOICR;
-    uint32 GPIOAFSEL;
-    uint32 reserved0[55];
-    uint32 GPIODR2R;
-    uint32 GPIODR4R;
-    uint32 GPIODR8R;
-    uint32 GPIOODR;
-    uint32 GPIOPUR;
-    uint32 GPIOPDR;
-    uint32 GPIOSLR;
-    uint32 GPIODEN;
-    uint32 GPIOLOCK;
-    uint32 GPIOCR;
-    uint32 GPIOAMSEL;
-    uint32 GPIOPCTL;
-    uint32 GPIOADCCTL;
-    uint32 GPIODMACTL;
-    uint32 reserved1[678];
-    uint32 GPIOPeriphID4;
-    uint32 GPIOPeriphID5;
-    uint32 GPIOPeriphID6;
-    uint32 GPIOPeriphID7;
-    uint32 GPIOPeriphID0;
-    uint32 GPIOPeriphID1;
-    uint32 GPIOPeriphID2;
-    uint32 GPIOPeriphID3;
-    uint32 GPIOPCellID0;
-    uint32 GPIOPCellID1;
-    uint32 GPIOPCellID2;
-    uint32 GPIOPCellID3;
-
-}GPIO_Registers;
-
-// General Prpose TIMERs registers
-typedef struct
+	uint32_t BASETHR		:1;
+	uint32_t MAINPEND		:1;
+	uint32_t 						:1;
+	uint32_t UNALIGNED	:1;
+	uint32_t DIV0				:1;
+	uint32_t						:3;
+	uint32_t BFHFNMIGN	:1;
+	uint32_t STKALIGN		:1;
+	uint32_t						:0;
+}CFGCTRL_BF;
+typedef union 
 {
-    uint32 GPTMCFG;
-    uint32 GPTMTAMR;
-    uint32 GPTMTBMR;
-    uint32 GPTMCTL;
-    uint32 GPTMSYNC;
-    uint32 reserved1;
-    uint32 GPTMIMR;
-    uint32 GPTMRIS;
-    uint32 GPTMMIS;
-    uint32 GPTMICR;
-    uint32 GPTMTAILR;
-    uint32 GPTMTBILR;
-    uint32 GPTMTAMATCHR;
-    uint32 GPTMTAMBTCHR;
-    uint32 GPTMTAPR;
-    uint32 GPTMTBPR;
-    uint32 GPTMTAPMR;
-    uint32 GPTMTBPMR;
-    uint32 GPTMTAR;
-    uint32 GPTMTBR;
-    uint32 GPTMTAV;
-    uint32 GPTMTBV;
-    uint32 GPTMTCPD;
-    uint32 GPTMTAPS;
-    uint32 GPTMTBPS;
-    uint32 GPTMTAPV;
-    uint32 GPTMTBPV;
-    uint32 reserved2[918];
-    uint32 GPTMPP;
+	uint32_t R;
+	CFGCTRL_BF B;
+}CFGCTRL_Tag;
+/**********************************************************************************************************************
+ *  GLOBAL CONSTANT MACROS
+ *********************************************************************************************************************/
+/**********************************************************************************************************************
+*            Peripheral declaration             
+ *********************************************************************************************************************/
+#define CORTEXM4_PERI_BASE_ADDRESS             0xE000E000UL
+#define APINT                                  ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0xD0C))
+#define INTCTRL                                ((volatile INTCTRL_Tag*)(CORTEXM4_PERI_BASE_ADDRESS+0xD04))
+#define VTABLE                                 ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0xD08))//10 LSB BITS RESERVED
+#define SYSCTRL                                (( Sysctl_Type*)SYS_CTRL_BASE_ADD)
+#define CFGCTRL                                ((volatile CFGCTRL_Tag*)(CORTEXM4_PERI_BASE_ADDRESS+0xD14))
+#define EN_BASE(x)														 ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x100+x*4))
+#define EN0                                    ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x100))
+#define EN1                                    ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x104))
+#define EN2                                    ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x108))
+#define EN3                                    ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x10C))
+#define EN4                                    ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x110))
+#define DIS0                                   ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x180))
+#define DIS1                                   ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x184))
+#define DIS2                                   ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x188))
+#define DIS3                                   ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x18C))
+#define DIS4                                   ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x190))
+#define PEND0                                  ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x200))
+#define PEND1                                  ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x204))
+#define PEND2                                  ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x208))
+#define PEND3                                  ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x20C))
+#define PEND4                                  ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x210))
+#define PRI0                                   ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x400))
+#define PRI1                                   ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x404))
+#define PRI2                                   ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x408))
+#define PRI3                                   ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x40C))
+#define PRI4                                   ((volatile uint32_t*)(CORTEXM4_PERI_BASE_ADDRESS+0x410))
+#define WATCHDOG0_BASE                  			 ((volatile uint32_t*)(0x40000000UL+0x410))
+#define WATCHDOG1_BASE                  			 ((volatile uint32_t*)(0x40001000UL+0x410))
+#define TIMER_OFFSET(x)												 (x<8?(0x40030000UL+(x)*0x1000):(0x4004C000UL+(x-8)*0x1000))
+#define TIMER_BASE(x)                     		 ((TIMER0_Type*)(TIMER_OFFSET(x)))
 
-} Gpt_Registers;
-
-typedef struct
-{
-    uint32 reserved0[383];
-    uint32 RCGCWD;
-    uint32 RCGCTIMER;
-    uint32 RCGCGPIO;
-    uint32 RCGCDMA;
-    uint32 reserved1;
-    uint32 RCGCHIB;
-    uint32 RCGCUART;
-    uint32 RCGCSSI;
-    uint32 RCGCI2C;
-    uint32 reserved2;
-    uint32 RCGCUSB;
-    uint32 reserved3[2];
-    uint32 RCGCCAN;
-    uint32 RCGCADC;
-    uint32 RCGCACMP;
-    uint32 RCGCPWM;
-    uint32 RCGCQEI;
-    uint32 reserved4[4];
-    uint32 RCGCEEPROM;
-    uint32 RCGCWTIMER;
-    uint32 reserved5[232];
-    uint32 PRWD;
-    uint32 PRTIMER;
-    uint32 PRGPIO;
-    uint32 PRDMA;
-    uint32 reserved6;
-    uint32 PRHIB;
-    uint32 PRUART;
-    uint32 PRSSI;
-    uint32 PRI2C;
-    uint32 reserved7;
-    uint32 PRUSB;
-    uint32 reserved8[2];
-    uint32 PRCAN;
-    uint32 PRADC;
-    uint32 PRACMP;
-    uint32 PRPWM;
-    uint32 PRQEI;
-    uint32 reserved9[4];
-    uint32 PREEPROM;
-    uint32 PRWTIMER;
-
-} SysCtrl_Registers;
-/**************************************************************************************************
- *	GLOBAL CONSTANT MACROS
- *************************************************************************************************/
+/* ================================================================================ */
+/* ================                      GPIOA                     ================ */
+/* ================================================================================ */
 
 
+/**
+  * @brief Register map for GPIOA peripheral (GPIOA)
+  */
 
- #define CORTEXM4_PERI_BASE_ADDRESS     0xE000E000u
- #define NVIC_OFFSET                    0x100u
- #define SCB_OFFSET                     0xD00u
+typedef struct {                                    /*!< GPIOA Structure                                                       */
+  __I  uint32_t  RESERVED[255];
+  __IO uint32_t  DATA;                              /*!< GPIO Data                                                             */
+  __IO uint32_t  DIR;                               /*!< GPIO Direction                                                        */
+  __IO uint32_t  IS;                                /*!< GPIO Interrupt Sense                                                  */
+  __IO uint32_t  IBE;                               /*!< GPIO Interrupt Both Edges                                             */
+  __IO uint32_t  IEV;                               /*!< GPIO Interrupt Event                                                  */
+  __IO uint32_t  IM;                                /*!< GPIO Interrupt Mask                                                   */
+  __IO uint32_t  RIS;                               /*!< GPIO Raw Interrupt Status                                             */
+  __IO uint32_t  MIS;                               /*!< GPIO Masked Interrupt Status                                          */
+  __O  uint32_t  ICR;                               /*!< GPIO Interrupt Clear                                                  */
+  __IO uint32_t  AFSEL;                             /*!< GPIO Alternate Function Select                                        */
+  __I  uint32_t  RESERVED1[55];
+  __IO uint32_t  DR2R;                              /*!< GPIO 2-mA Drive Select                                                */
+  __IO uint32_t  DR4R;                              /*!< GPIO 4-mA Drive Select                                                */
+  __IO uint32_t  DR8R;                              /*!< GPIO 8-mA Drive Select                                                */
+  __IO uint32_t  ODR;                               /*!< GPIO Open Drain Select                                                */
+  __IO uint32_t  PUR;                               /*!< GPIO Pull-Up Select                                                   */
+  __IO uint32_t  PDR;                               /*!< GPIO Pull-Down Select                                                 */
+  __IO uint32_t  SLR;                               /*!< GPIO Slew Rate Control Select                                         */
+  __IO uint32_t  DEN;                               /*!< GPIO Digital Enable                                                   */
+  __IO uint32_t  LOCK;                              /*!< GPIO Lock                                                             */
+  __IO uint32_t  CR;                                /*!< GPIO Commit                                                           */
+  __IO uint32_t  AMSEL;                             /*!< GPIO Analog Mode Select                                               */
+  __IO uint32_t  PCTL;                              /*!< GPIO Port Control                                                     */
+  __IO uint32_t  ADCCTL;                            /*!< GPIO ADC Control                                                      */
+  __IO uint32_t  DMACTL;                            /*!< GPIO DMA Control                                                      */
+} GPIOA_Type;
 
- #define GPIO_COMMON_BASE               0x40000000u
- #define GPIO_A_BASE                    0x40004000u
- #define GPIO_B_BASE                    0x40005000u
- #define GPIO_C_BASE                    0x40006000u
- #define GPIO_D_BASE                    0x40007000u
- #define GPIO_E_BASE                    0x40024000u
- #define GPIO_F_BASE                    0x40025000u
-
- // GPT Base addresses
- #define TIMER0_BASE                    0x40030000u
- #define TIMER1_BASE                    0x40031000u
- #define TIMER2_BASE                    0x40032000u
- #define TIMER3_BASE                    0x40033000u
- #define TIMER4_BASE                    0x40035000u
- #define TIMER5_BASE                    0x40035000u
- 
- #define WIDETIMER0_BASE                0x40036000u
- #define WIDETIMER1_BASE                0x40037000u
- #define WIDETIMER2_BASE                0x4004C000u
- #define WIDETIMER3_BASE                0x4004D000u
- #define WIDETIMER4_BASE                0x4004E000u
- #define WIDETIMER5_BASE                0x4004F000u
-
-//SysCtrl
- #define SysCtrl_BASE                   0x400FE000u
- #define RCGC_OFFSET                    0x600u
- #define PR_OFFSET                      0xA00u
-
-
-
- //Nested Vectored Interrupt Controller (NVIC) Registers
- #define NVIC                           ((volatile NVIC_Registers *)(CORTEXM4_PERI_BASE_ADDRESS + NVIC_OFFSET))
-
-//  #define EN0                            *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x100))
-//  #define EN1                            *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x104))
-//  #define EN2                            *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x108))
-//  #define EN3                            *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x10C))
-//  #define EN4                            *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x110))
-
-//  #define DIS0                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x180))
-//  #define DIS1                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x184))
-//  #define DIS2                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x188))
-//  #define DIS3                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x18C))
-//  #define DIS4                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x190))
-
-//  #define PEND0                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x200))
-//  #define PEND1                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x204))
-//  #define PEND2                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x208))
-//  #define PEND3                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x20C))
-//  #define PEND4                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x210))
-
-//  #define UNPEND0                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x280))
-//  #define UNPEND1                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x284))
-//  #define UNPEND2                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x288))
-//  #define UNPEND3                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x28C))
-//  #define UNPEND4                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x290))
- 
-//  #define ACTIVE0                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x300))
-//  #define ACTIVE1                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x304))
-//  #define ACTIVE2                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x308))
-//  #define ACTIVE3                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x30C))
-//  #define ACTIVE4                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x310))
-  
-//  #define PRI0                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x400))
-//  #define PRI1                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x404))
-//  #define PRI2                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x408))
-//  #define PRI3                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x40C))
-//  #define PRI4                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x410))
-//  #define PRI5                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x414))
-//  #define PRI6                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x418))
-//  #define PRI7                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x41C))
-//  #define PRI8                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x420))
-//  #define PRI9                           *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x424))
-//  #define PRI10                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x428))
-//  #define PRI11                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x42C))
-//  #define PRI12                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x430))
-//  #define PRI13                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x434))
-//  #define PRI14                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x438))
-//  #define PRI15                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x43C))
-//  #define PRI16                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x440))
-//  #define PRI17                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x444))
-//  #define PRI18                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x448))
-//  #define PRI19                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x44C))
-//  #define PRI20                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x450))
-//  #define PRI21                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x454))
-//  #define PRI22                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x458))
-//  #define PRI23                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x45C))
-//  #define PRI24                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x460))
-//  #define PRI25                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x464))
-//  #define PRI26                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x468))
-//  #define PRI27                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x46C))
-//  #define PRI28                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x470))
-//  #define PRI29                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x474))
-//  #define PRI30                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x478))
-//  #define PRI31                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x47C))
-//  #define PRI32                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x480))
-//  #define PRI33                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x484))
-//  #define PRI34                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x488))
-
-//  #define SWIDETRIG                      *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xF00))
- 
- //System Control Block (SCB) Registers
- #define SCB                            ((volatile SCB_Registers *)(CORTEXM4_PERI_BASE_ADDRESS + SCB_OFFSET))
-
-//  #define ACTLR                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0x008))
-//  #define CPUID                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD00))
-//  #define INTCTRL                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD04))
-//  #define VTABLE                         *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD08))
-//  #define APINT                          *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD0C))
-//  #define SYSCTRL                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD10))
-//  #define CFGCTRL                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD14))
-//  #define SYSPRI1                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD18))
-//  #define SYSPRI2                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD1C))
-//  #define SYSPRI3                        *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD20))
-//  #define SYSHNDCTRL                     *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD24))
-//  #define FAULTSTAT                      *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD28))
-//  #define HFAULTSTAT                     *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD2C))
-//  #define MMADDR                         *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD34))
-//  #define FAULTADDR                      *((volatile uint32*)(CORTEXM4_PERI_BASE_ADDRESS+0xD38))
-
-//GPIO Register
-//GPIO
- #define GPIO(GPIO_BASE)                ((volatile GPIO_Registers *)(GPIO_BASE))
-
- #define GPIOA                          ((volatile GPIO_Registers *)(GPIO_A_BASE))
- #define GPIOB                          ((volatile GPIO_Registers *)(GPIO_B_BASE))
- #define GPIOC                          ((volatile GPIO_Registers *)(GPIO_C_BASE))
- #define GPIOD                          ((volatile GPIO_Registers *)(GPIO_D_BASE))
- #define GPIOE                          ((volatile GPIO_Registers *)(GPIO_E_BASE))
- #define GPIOF                          ((volatile GPIO_Registers *)(GPIO_F_BASE))
-
-//General Purpose TIMERs
- #define TIMER(TIMER_BASE)              ((volatile Gpt_Registers *)(TIMER_BASE))
-
- #define TIMER0                         ((volatile Gpt_Registers *)(TIMER0_BASE))
- #define TIMER1                         ((volatile Gpt_Registers *)(TIMER1_BASE))
- #define TIMER2                         ((volatile Gpt_Registers *)(TIMER2_BASE))
- #define TIMER3                         ((volatile Gpt_Registers *)(TIMER3_BASE))
- #define TIMER4                         ((volatile Gpt_Registers *)(TIMER4_BASE))
- #define TIMER5                         ((volatile Gpt_Registers *)(TIMER5_BASE))
-
- #define WIDETIMER(WIDETIMER_BASE)      ((volatile Gpt_Registers *)(WIDETIMER_BASE))
-
- #define WIDETIMER0                     ((volatile Gpt_Registers *)(WIDETIMER0_BASE))
- #define WIDETIMER1                     ((volatile Gpt_Registers *)(WIDETIMER1_BASE))
- #define WIDETIMER2                     ((volatile Gpt_Registers *)(WIDETIMER2_BASE))
- #define WIDETIMER3                     ((volatile Gpt_Registers *)(WIDETIMER3_BASE))
- #define WIDETIMER4                     ((volatile Gpt_Registers *)(WIDETIMER4_BASE))
- #define WIDETIMER5                     ((volatile Gpt_Registers *)(WIDETIMER5_BASE))
-
-//SysCtrl
- #define SysCtrl                        ((volatile SysCtrl_Registers *)(SysCtrl_BASE))
+/*****************/
+/* PORT Registers*/
+/*****************/
+/*
+PORT PortA(APB):0x4000.4000
+PORT PortA(AHB):0x4005.8000
+PORT PortB(APB):0x4000.5000
+PORT PortB(AHB):0x4005.9000
+PORT PortC(APB):6x4008.0000
+PORT PortC(AHB):0x4005.A000
+PORT PortD(APB):8x4000.7000
+PORT PortD(AHB):8x4005.B000
+PORT PortE(APB):8x4002.4000
+PORT PortE(AHB):0x4005.C000
+PORT PortF(APB):8x4002.5000
+PORT PortF(AHB):8x4005.D008
+*/
 
 
-/**************************************************************************************************
- *	GLOBAL FUNCTION MACROS
- *************************************************************************************************/
+//-------------------------------------
+#ifdef PORT_APB
+#define PORT_OFFSET(x)			(x<4?(0x40004000+(x)*0x1000):(0x40024000+(x-4)*0x1000))
+#elif PORT_AHB
+#define PORT_OFFSET(x)			((0x40058000)+((x)*0x1000))
+#else
+#error "Please choose a bus for PORTs"
+#endif
 
+#define GPIO_BASE(x)                           ((GPIOA_Type *) PORT_OFFSET(x))
+
+#define PORTDATA(x)			*((volatile uint32_t*)(PORT_OFFSET(x)))
+#define PORTDIR(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x0400))
+#define PORTIS(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x0404)) /**< PORT Interrupt Sense>*/
+#define PORTIBE(x)      	*((volatile uint32_t*)(PORT_OFFSET(x)+0x0408)) /**< PORT Interrupt Both Edges>*/
+#define PORTIEV(x)      	*((volatile uint32_t*)(PORT_OFFSET(x)+0x040C)) /**< PORT Interrupt Event>*/
+#define GPDIM(x)        	*((volatile uint32_t*)(PORT_OFFSET(x)+0x0410)) /**< PORT Interrupt Mask>*/
+#define PORTRIS(x)      	*((volatile uint32_t*)(PORT_OFFSET(x)+0x0414)) /**< PORT Raw Interrupt Status>*/
+#define PORTMIS(x)      	*((volatile uint32_t*)(PORT_OFFSET(x)+0x0418)) /**< PORT Masked Interrupt Status>*/
+#define PORTICR(x)      	*((volatile uint32_t*)(PORT_OFFSET(x)+0x041C)) /**< PORT Interrupt Clear>*/
+#define PORTAFSEL(x)    	*((volatile uint32_t*)(PORT_OFFSET(x)+0x0420)) /**< PORT Alternate Function Select>*/
+#define PORTDR2R(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x0500)) /**< PORT 2-mA Drive Select>*/
+#define PORTDR4R(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x0504)) /**< PORT 4-mA Drive Select>*/
+#define PORTDR8R(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x0508)) /**< PORT 8-mA Drive Select>*/                  
+#define PORTODR(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x050c)) /**< PORT Open Drain Select>*/
+#define PORTPUR(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x0510)) /**< PORT Pull-Up Select>*/
+#define PORTPDR(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x0514)) /**< PORT Pull-Down Select>*/
+#define PORTSLR(X)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x0518)) /**< PORT Slew Rate Control Select>*/
+#define PORTDEN(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x051C)) /**< PORT Digital Enable>*/
+#define PORTLOCK(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x0520)) /**< PORT Lock>*/
+#define PORTCR(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x0524)) /**< PORT Commit>*/
+#define PORTAMSEL(x)		*((volatile uint32_t*)(PORT_OFFSET(x)+0x0528)) /**< PORT Analog Mode Select>*/                        
+#define PORTPCTL(x)			*((volatile uint32_t*)(PORT_OFFSET(x)+0x052C)) /**< PORT Port Control>*/
+#define PORTADCCTL(x)		*((volatile uint32_t*)(PORT_OFFSET(x)+0x0530)) /**< PORT ADC Control>*/                     
+                        
+                   
+                   
+                        
+/**********************************************************************************************************************
+ *  GLOBAL DATA PROTOTYPES
+ *********************************************************************************************************************/
 
  
 
- #endif    /* MCU_HW_H */
  
-/**************************************************************************************************
- *	END OF FILE:	Mcu_Hw.h
- *************************************************************************************************/
+#endif  /* MCU_HW_H */
+
+/**********************************************************************************************************************
+ *  END OF FILE: Mcu_Hw.h
+ *********************************************************************************************************************/

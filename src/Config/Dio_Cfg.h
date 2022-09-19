@@ -1,76 +1,61 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *         File:  Port_Types.h
+ *         File:  Dio_Cfg.h
  *       Module:  -
  *
  *  Description:  <Write File DESCRIPTION here>     
  *  
  *********************************************************************************************************************/
-#ifndef Port_Types_H
-#define Port_Types_H
+#ifndef Dio_CFG_H
+#define Dio_CFG_H
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
-#include "Std_Types.h"
-#include "Dio_Types.h"
+#include "Port.h"
 
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
-//#define CONFIGURED_PINS			5 /*< Size of config array */
+/* Number of the configured Dio Channels */
+#define DIO_CONFIGURED_CHANNLES              (5U)
+
+/* Channel Index in the array of structures in Dio_PBcfg.c */
+#define DioConf_LED1_CHANNEL        PIN1
+#define DioConf_LED2_CHANNEL        PIN2
+#define DioConf_LED3_CHANNEL        PIN3
+#define DioConf_SW1_CHANNEL         PIN4
+#define DioConf_SW2_CHANNEL         PIN0
+
+/* DIO Configured Port ID's  */
+#define DioConf_LED1_PORT                PORTF
+#define DioConf_LED2_PORT                PORTF
+#define DioConf_LED3_PORT                PORTF
+#define DioConf_SW1_PORT                 PORTF
+#define DioConf_SW2_PORT                 PORTF
+
+/* DIO Configured Channel ID's */
+//#define DioConf_LED1_CHANNEL_NUM             (Dio_ChannelType)1 /* Pin 1 in PORTF */
+//#define DioConf_SW1_CHANNEL_NUM              (Dio_ChannelType)4 /* Pin 4 in PORTF */
+
 
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION MACROS
  *********************************************************************************************************************/
-#define Port_PinType		uint8_t
+
 
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
-typedef enum
+/*typedef struct Dio_ConfigType
 {
-	NORMAL_MODE =0,
-	SPECIAL_MODE =1
-}Port_PinModeType;
-typedef enum
-{
-	DIRECTION_INPUT =0,
-	DIRECTION_OUTPUT =1
-}Port_PinDirectionType;
-typedef enum
-{
-	PULL_UP =0,
-	PULL_DOWN ,
-	OPEN_DRAIN
-}PortPinInternalAttach;
-typedef enum
-{
-	R2R,
-	R4R,
-	R8R
-}PortPinOutputCurrent;
-
-
-typedef struct
-{
-	Dio_PortType Port;
-	Dio_ChannelType Pin;
-}Port_ChannelType;
-typedef struct
-{
-	Port_PinModeType Mode;
-	Dio_LevelType Value;
-	PortPinOutputCurrent Current;
-	PortPinInternalAttach Attach;
-	Port_PinDirectionType Direction;
-	Port_ChannelType Channel;
-}Port_ConfigType;
+	Port_ConfigType Channels[DIO_CONFIGURED_CHANNLES];
+} Dio_ConfigType;
+*/
  
-
-#endif  /* Port_Types_H */
+#endif  /* Dio_CFG_H */
 
 /**********************************************************************************************************************
- *  END OF FILE: Port_Types.h
+ *  END OF FILE: Dio_Cfg.h
  *********************************************************************************************************************/
