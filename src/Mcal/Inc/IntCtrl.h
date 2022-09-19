@@ -1,48 +1,50 @@
 /**************************************************************************************************
  *	FILE DESCRIPTION
  *	-----------------------------------------------------------------------------------------------
- *	       File:	IntCtrl_Cfg.h
+ *	       File:	IntCtrl.h
  *	     Module:
  *
  *	Description:
  *
  *
  *************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
-
+#ifndef INTCTRL_H
+#define INTCTRL_H
 /**************************************************************************************************
  *	INCLUDES
  *************************************************************************************************/
+
+#include "IntCtrl_Types.h"
+#include "IntCtrl_Cfg.h"
 #include "Mcu_Hw.h"
-#include "IntCtrl_Types.h" 
 
 /**************************************************************************************************
  *	GLOBAL CONSTANT MACROS
  *************************************************************************************************/
-#define ACTIVATED_INT_NUM                           (2u)
-
-/*
- * XXX for group priority(0->7), subgroup priority (0)
- * XXY for group priority(0->3), subgroup priority (0->1)
- * XYY for group priority(0->1), subgroup priority (0->3)
- * YYY for group priority(0)	 , subgroup priority (0->7)
- */
-#define PRIGROUPING                                 XXY
-
+ 
 /**************************************************************************************************
  *	GLOBAL FUNCTION MACROS
  *************************************************************************************************/
-
+ 
 /**************************************************************************************************
  *	GLOBAL DATA TYPES AND STRUCTURES
  *************************************************************************************************/
-extern const IntCtrl_ConfigType intCtrl_Cofig[ACTIVATED_INT_NUM];
 
- 
+ /********************************************************************
+ *	\Syntax				: void IntCtrl_Init(void)
+ *	\Description		: Initialize NVIC\SCB Module by passing the
+ *                        the configuration into NVIC\SCB registers
+ *	\Sync\Async			: Synchronous
+ *	\Reentrancy			: None Reentrant
+ *	\Parameters (in)	: None
+ *	\Parameters (out)	: None
+ *	\Return value		: None
+ *
+ *******************************************************************/
+ void IntCtrl_Init(void);
 
- #endif    /* INTCTRL_CFG_H */
+ #endif    /* INTCTRL_H */
  
 /**************************************************************************************************
- *	END OF FILE:	IntCtrl_Cfg.h
+ *	END OF FILE:	IntCtrl.h
  *************************************************************************************************/

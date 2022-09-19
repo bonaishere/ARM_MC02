@@ -1,48 +1,44 @@
 /**************************************************************************************************
  *	FILE DESCRIPTION
  *	-----------------------------------------------------------------------------------------------
- *	       File:	IntCtrl_Cfg.h
+ *	       File:	Gpt.h
  *	     Module:
  *
  *	Description:
  *
  *
  *************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
-
+#ifndef GPT_H
+#define GPT_H
 /**************************************************************************************************
  *	INCLUDES
  *************************************************************************************************/
 #include "Mcu_Hw.h"
-#include "IntCtrl_Types.h" 
-
+#include "Gpt_Types.h"
+#include "Gpt_Cfg.h"
 /**************************************************************************************************
  *	GLOBAL CONSTANT MACROS
  *************************************************************************************************/
-#define ACTIVATED_INT_NUM                           (2u)
-
-/*
- * XXX for group priority(0->7), subgroup priority (0)
- * XXY for group priority(0->3), subgroup priority (0->1)
- * XYY for group priority(0->1), subgroup priority (0->3)
- * YYY for group priority(0)	 , subgroup priority (0->7)
- */
-#define PRIGROUPING                                 XXY
-
+ 
 /**************************************************************************************************
  *	GLOBAL FUNCTION MACROS
  *************************************************************************************************/
+ void Gpt_Init(void);
+
+ void Gpt_EnableNotification(Gpt_ConfigType *ConfigPtr, Gpt_Notification callBackPtr);
+ void Gpt_DisableNotification(Gpt_ConfigType *ConfigPtr);
+ void Gpt_StartTimer(Gpt_ConfigType *ConfigPtr, Gpt_ValueType loadValue);
+ 
+ void TIMER1A_Handler(void);
+
 
 /**************************************************************************************************
  *	GLOBAL DATA TYPES AND STRUCTURES
  *************************************************************************************************/
-extern const IntCtrl_ConfigType intCtrl_Cofig[ACTIVATED_INT_NUM];
 
- 
 
- #endif    /* INTCTRL_CFG_H */
+ #endif    /* GPT_H */
  
 /**************************************************************************************************
- *	END OF FILE:	IntCtrl_Cfg.h
+ *	END OF FILE:	Gpt.h
  *************************************************************************************************/

@@ -1,213 +1,134 @@
-/**********************************************************************************************************************
- *  FILE DESCRIPTION
- *  -----------------------------------------------------------------------------------------------------------------*/
-/**        \file  IntCrtl.c
- *        \brief  Nested Vector Interrupt Controller Driver
+/**************************************************************************************************
+ *	FILE DESCRIPTION
+ *	---------------------------------------------------------------------------------------------*/
+/**		\file
+ *		\brief
  *
- *      \details  The Driver Configure All MCU interrupts Priority into gorups and subgroups
- *                Enable NVIC Interrupt Gate for Peripherals
+ *		\details
  *
- *********************************************************************************************************************/
-
-/**********************************************************************************************************************
- *  INCLUDES
- *********************************************************************************************************************/
-#include "Std_Types.h"
+ *
+ *************************************************************************************************/
+  
+/**************************************************************************************************
+ *	INCLUDES
+ *************************************************************************************************/
 #include "IntCtrl.h"
-#include "Mcu_Hw.h"
-/**********************************************************************************************************************
-*  LOCAL MACROS CONSTANT\FUNCTION
-*********************************************************************************************************************/	
+ 
+/**************************************************************************************************
+ *	LOCAL MACROS CONSTANT\FUNCTION
+ *************************************************************************************************/
 
-/**********************************************************************************************************************
-	*  LOCAL DATA 
- *********************************************************************************************************************/
+/**************************************************************************************************
+ *	LOCAL DATA
+ *************************************************************************************************/
+ 
+/**************************************************************************************************
+ *	GLOBAL DATA
+ *************************************************************************************************/
+ 
+/**************************************************************************************************
+ *	LOCAL FUNCTION PROTOTYPES
+ *************************************************************************************************/
+ void NVIC_SetPRIx(const IntCtrl_ConfigType *ConfigPtr);
+ void NVIC_SetENx(const IntCtrl_ConfigType *ConfigPtr);
+/**************************************************************************************************
+ *	LOCAL FUNCTIONS
+ *************************************************************************************************/
+ 
+/**************************************************************************************************
+ *	GLOBAL FUNCTIONS
+ *************************************************************************************************/
 
-/**********************************************************************************************************************
- *  GLOBAL DATA
- *********************************************************************************************************************/
+/********************************************************************
+ *	\Syntax				: void IntCtrl_Init(void)
+ *	\Description		: Initialize NVIC\SCB Module by passing the
+ *                        the configuration into NVIC\SCB registers
+ *	\Sync\Async			: Synchronous
+ *	\Reentrancy			: None Reentrant
+ *	\Parameters (in)	: None
+ *	\Parameters (out)	: None
+ *	\Return value		: None
+ *
+ *******************************************************************/
+ void IntCtrl_Init(void)
+ {
 
-/**********************************************************************************************************************
- *  LOCAL FUNCTION PROTOTYPES
- *********************************************************************************************************************/
+  //  /*Enabling FAULTMASK and PRIMASK using MSR or CPS*/
+  //  __asm("CPSIE f");
+  //  __asm("CPSIE i");
 
-/**********************************************************************************************************************
- *  LOCAL FUNCTIONS
- *********************************************************************************************************************/
+  //  SCB->CFGCTRL |= 0x10;        /*Enable SWTRIG by setting MAINPEND (bit 1)*/
 
-/**********************************************************************************************************************
- *  GLOBAL FUNCTIONS
- *********************************************************************************************************************/
+  //  NVIC->SWIDETRIG |= 0x00000001; /*This field holds the interrupt ID 
+  //                                   of the required SGI. For example, a 
+  //                                   value of 0x3 generates an interrupt on IRQ3*/
+   
+   /*onfigure Grouping\Subgrouping system in APINT register in SCB*/
+   SCB->APINT.BF.VECTKEY = 0xFA05;
+   SCB->APINT.BF.PRIGROUP = PRIGROUPING;
 
+  for (uint8 i = 0; i < ACTIVATED_INT_NUM; i++)
+  {
+    /*Assign Group\Subgroup priority in NVIC_PRIx and SCB_SYSPRIx registers*/
+    NVIC_SetPRIx(&intCtrl_Cofig[i]);
 
-/******************************************************************************
-* \Syntax          : void IntCrtl_Init(void)                                      
-* \Description     : initialize Nvic\SCB Module by parsing the Configuration 
-*                    into Nvic\SCB registers                                    
-*                                                                             
-* \Sync\Async      : Synchronous                                               
-* \Reentrancy      : Non Reentrant                                             
-* \Parameters (in) : None                     
-* \Parameters (out): None                                                      
-* \Return value:   : None
-*******************************************************************************/
-void IntCtrl_Init(void)
-{
-	uint8 numOfGpPri 							= NUM_OF_GROUP_PRI_SELECTOR;
-	uint8 i 									= 0;
-	uint8 PriValue								= 0;
-	uint8 RegIndex 								= 0;
-	uint8 BitOffset 							= 0;
-	uint8 IRQ_Num 								= 0;
-	IntCtrl_InterruptType IntName 				= 0;
-	uint8 GroupPri 								= 0;
-	uint8 SubGroupPri 							= 0;
-	
-	/*Enable/Disable Global Interrupt*/
-	#if(ENABLE_GLOBAL_INTERRUPT == 1)
-		__asm
-			(
-				"CPSIE i \n"
-			);
-	#else
-		__asm
-			(
-				"CPSID i \n"
-			);
-	#endif
-	
-	/*Configure Grouping\SubGrouping (NUM_OF_GROUP_PRI_SELECTOR) System in APINT register in SCB*/
-	switch(numOfGpPri)
-	{
-		case 1:
-			APINT = APINT_VECTKEY|(0x7<<8);
-			break;
-		case 2:
-			APINT = APINT_VECTKEY|(0x6<<8);
-			break;
-		case 4:
-			APINT = APINT_VECTKEY|(0x5<<8);
-			break;
-		case 8:
-			APINT = APINT_VECTKEY|(0x0<<8);
-			break;
+    /*Enable\Disable based on your configuration in NVIC_ENx and SCB_Sys register*/
+    NVIC_SetENx(&intCtrl_Cofig[i]);
 
-		/*if the user set invalid number then the default will be set to 8 GP and 0 SubGP*/
-		default:
-			APINT = APINT_VECTKEY|(0x0<<8);
-			break;
-	}
-	
-	/*##############################################################################
-			looping through the number of interrupts needed to set their configrations 
-	################################################################################*/
+  }
+  
+ }
+ 
+ /********************************************************************
+ *	\Syntax				:
+ *	\Description		:
+ *
+ *	\Sync\Async			:
+ *	\Reentrancy			:
+ *	\Parameters (in)	:
+ *	\Parameters (out)	:
+ *	\Return value		:
+ *
+ *******************************************************************/
+ void NVIC_SetPRIx(const IntCtrl_ConfigType *ConfigPtr)
+ {
+    uint32 bitOffset;
+    uint32 offset;
+    
+    	bitOffset = ((((ConfigPtr->vectorName) % 4) * 8) +5) ;
+		offset= (ConfigPtr->vectorName) / 4;
 
-	for(i=0; i<NUM_OF_ACTIVE_INTERRUPT; i++)
-	{
-		IntName = IntCtrl_Cfg_UserArray[i].IntCtrl_Name; // getting the interrupt name 
-		GroupPri = IntCtrl_Cfg_UserArray[i].IntCtrl_GroupPri; // getting the value of group periority
-		SubGroupPri = IntCtrl_Cfg_UserArray[i].IntCtrl_SubGroupPri; // getting the value of the subgroup periority
-		
-		/*******************************************************
-				check for valid Group and Sub-Group Priorities
-		******************************************************/
-		if((numOfGpPri == 8)) 
-		{
-			if(GroupPri > 7)
-			{
-				SubGroupPri = 0;
-				GroupPri = 7;
-			}
-			PriValue = (GroupPri << 5);
-		}
-		else if(numOfGpPri == 4)
-		{
-			if(GroupPri > 3)
-			{
-				GroupPri = 3;
-			}
-			if(SubGroupPri > 1)
-			{
-				SubGroupPri = 1;
-			}
-			PriValue = (GroupPri << 6)|(SubGroupPri << 5);
-		}
-		else if(numOfGpPri == 2) 
-		{
-			if(GroupPri > 1)
-			{
-				GroupPri = 1;
-			}
-			if(SubGroupPri > 3)
-			{
-				SubGroupPri = 3;
-			}
-			PriValue = (GroupPri << 7)|(SubGroupPri << 5);
-		}
-		else if(numOfGpPri == 1)
-		{
-			if(SubGroupPri > 7)
-			{
-				SubGroupPri = 7;
-				GroupPri = 0;
-			}
-			PriValue = (SubGroupPri << 5);
-		}
-		else
-		{
-			/*INVALID Number of Group priority */
-		}
-		
-		if(IntName < 16)
-		{
-			/*Set Priority for Exceptions and Faults and then Enable it*/
-			switch(IntName)
-			{
-				case IntCtrl_USAGE_FAULT:
-					SYSPRI1 |= (PriValue << 16); 
-					SETBIT(SYSHNDCTRL,18);
-					break;
-				case IntCtrl_BUS_FAULT:
-					SYSPRI1 |= (PriValue << 8); 
-					SETBIT(SYSHNDCTRL,17);
-					break;
-				case IntCtrl_MEM_MANAGE:
-					SYSPRI1 |= PriValue; 
-					SETBIT(SYSHNDCTRL,16);
-					break;
-				case IntCtrl_SVCALL:
-					SYSPRI2 |= (PriValue << 24);
-					break;
-				case IntCtrl_SYSTICK:
-					SYSPRI3 |= (PriValue << 24);
-					break;
-				case IntCtrl_PENDSV:
-					SYSPRI3 |= (PriValue << 16);
-					break;
-				case IntCtrl_DEBUG_MONITOR:
-					SYSPRI3 |= PriValue;
-					break;
-				default:
-					break;
-			}
-		}
-		
-		else
-		{
-			IRQ_Num = (uint8)IntName - 16; /*get the interrupt request number "IRQ" */
-			/*Set interrupt Priority*/
-			RegIndex = IRQ_Num / 4;
-			BitOffset = ((IRQ_Num % 4) * 8); /*there is no need to add 5 as I already shifted the value by 5 previously*/
-			PRI(RegIndex) |= PriValue << BitOffset ;
-	
-			/*Enable Interrupts*/
-			RegIndex = IRQ_Num / 32;
-			BitOffset = IRQ_Num % 32;
-			SETBIT(EN(RegIndex),BitOffset); 
-		}
-	}
-}
+		#if		(PRIGROUPING == XXX)
+    		NVIC->PRI[(ConfigPtr->vectorName) / 4].R |= (ConfigPtr->groupPriority << bitOffset);
+		#elif	(PRIGROUPING == XXY)
+    		NVIC->PRI[(ConfigPtr->vectorName) / 4].R |= (ConfigPtr->groupPriority << (bitOffset+1));
+    		NVIC->PRI[(ConfigPtr->vectorName) / 4].R |= (ConfigPtr->subGroupPriority << bitOffset);
+    	#elif	(PRIGROUPING == XYY)	
+			NVIC->PRI[(ConfigPtr->vectorName) / 4].R |= (ConfigPtr->groupPriority << (bitOffset+2));
+			NVIC->PRI[(ConfigPtr->vectorName) / 4].R |= (ConfigPtr->subGroupPriority << bitOffset);
+   		#elif	(PRIGROUPING == YYY)
+    		NVIC->PRI[(ConfigPtr->vectorName) / 4].R |= (ConfigPtr->subGroupPriority << bitOffset);
+    	#endif
+ }
+ 
+/********************************************************************
+ *	\Syntax				:
+ *	\Description		:
+ *
+ *	\Sync\Async			:
+ *	\Reentrancy			:
+ *	\Parameters (in)	:
+ *	\Parameters (out)	:
+ *	\Return value		:
+ *
+ *******************************************************************/
+ void NVIC_SetENx(const IntCtrl_ConfigType *ConfigPtr)
+ {
+	uint32 bitOffset;
 
-/**********************************************************************************************************************
- *  END OF FILE: IntCrtl.c
- *********************************************************************************************************************/
+	bitOffset = (ConfigPtr->vectorName %32) ;
+	NVIC->EN[ConfigPtr->vectorName /32] |= ((1u) << bitOffset);
+ }
+/**************************************************************************************************
+ *	END OF FILE: Std_Types.h
+ *************************************************************************************************/

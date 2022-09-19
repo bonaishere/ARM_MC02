@@ -1,48 +1,43 @@
 /**************************************************************************************************
  *	FILE DESCRIPTION
  *	-----------------------------------------------------------------------------------------------
- *	       File:	IntCtrl_Cfg.h
+ *	       File:	Dio.h
  *	     Module:
  *
  *	Description:
  *
  *
  *************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
-
+#ifndef DIO_H
+#define DIO_H
 /**************************************************************************************************
  *	INCLUDES
  *************************************************************************************************/
 #include "Mcu_Hw.h"
-#include "IntCtrl_Types.h" 
+#include "Dio_Types.h"
 
 /**************************************************************************************************
  *	GLOBAL CONSTANT MACROS
  *************************************************************************************************/
-#define ACTIVATED_INT_NUM                           (2u)
-
-/*
- * XXX for group priority(0->7), subgroup priority (0)
- * XXY for group priority(0->3), subgroup priority (0->1)
- * XYY for group priority(0->1), subgroup priority (0->3)
- * YYY for group priority(0)	 , subgroup priority (0->7)
- */
-#define PRIGROUPING                                 XXY
-
+#define FIRST_2BITS_MASK                       0x000000FFu
+#define SECOND_2BITS_MASK                      0x0000FF00u
 /**************************************************************************************************
  *	GLOBAL FUNCTION MACROS
  *************************************************************************************************/
+extern Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId);
+extern void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level);
+extern Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId);
+extern void Dio_WritePort(Dio_PortLevelType PortId, Dio_PortLevelType Level);
+extern void Dio_FlipChannel(Dio_ChannelType ChannelId);
 
 /**************************************************************************************************
  *	GLOBAL DATA TYPES AND STRUCTURES
  *************************************************************************************************/
-extern const IntCtrl_ConfigType intCtrl_Cofig[ACTIVATED_INT_NUM];
 
  
 
- #endif    /* INTCTRL_CFG_H */
+ #endif    /* DIO_H */
  
 /**************************************************************************************************
- *	END OF FILE:	IntCtrl_Cfg.h
+ *	END OF FILE:	Dio.h
  *************************************************************************************************/

@@ -1,48 +1,39 @@
 /**************************************************************************************************
  *	FILE DESCRIPTION
  *	-----------------------------------------------------------------------------------------------
- *	       File:	IntCtrl_Cfg.h
+ *	       File:	SysCtrl_Cfg.h
  *	     Module:
  *
  *	Description:
  *
  *
  *************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
-
+#ifndef SYSCTRL_CFG_H
+#define SYSCTRL_CFG_H
 /**************************************************************************************************
  *	INCLUDES
  *************************************************************************************************/
+#include "Std_Types.h"
 #include "Mcu_Hw.h"
-#include "IntCtrl_Types.h" 
+#include "SysCtrl_Types.h"
 
 /**************************************************************************************************
  *	GLOBAL CONSTANT MACROS
  *************************************************************************************************/
-#define ACTIVATED_INT_NUM                           (2u)
-
-/*
- * XXX for group priority(0->7), subgroup priority (0)
- * XXY for group priority(0->3), subgroup priority (0->1)
- * XYY for group priority(0->1), subgroup priority (0->3)
- * YYY for group priority(0)	 , subgroup priority (0->7)
- */
-#define PRIGROUPING                                 XXY
-
+#define ACTICATED_PERIPHIRALS_NUM           2
 /**************************************************************************************************
  *	GLOBAL FUNCTION MACROS
  *************************************************************************************************/
-
+ 
 /**************************************************************************************************
  *	GLOBAL DATA TYPES AND STRUCTURES
  *************************************************************************************************/
-extern const IntCtrl_ConfigType intCtrl_Cofig[ACTIVATED_INT_NUM];
+extern const SysCtrl_ConfigType SysCtrl_Config[ACTICATED_PERIPHIRALS_NUM];
 
  
 
- #endif    /* INTCTRL_CFG_H */
+ #endif    /* SYSCTRL_CFG_H */
  
 /**************************************************************************************************
- *	END OF FILE:	IntCtrl_Cfg.h
+ *	END OF FILE:	SysCtrl_Cfg.h
  *************************************************************************************************/

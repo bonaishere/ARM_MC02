@@ -1,48 +1,74 @@
 /**************************************************************************************************
  *	FILE DESCRIPTION
  *	-----------------------------------------------------------------------------------------------
- *	       File:	IntCtrl_Cfg.h
+ *	       File:	Gpt_Types.h
  *	     Module:
  *
  *	Description:
  *
  *
  *************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
-
+#ifndef GPT_TYPES_H
+#define GPT_TYPES_H
 /**************************************************************************************************
  *	INCLUDES
  *************************************************************************************************/
-#include "Mcu_Hw.h"
-#include "IntCtrl_Types.h" 
+ #include "Std_Types.h"
 
 /**************************************************************************************************
  *	GLOBAL CONSTANT MACROS
  *************************************************************************************************/
-#define ACTIVATED_INT_NUM                           (2u)
-
-/*
- * XXX for group priority(0->7), subgroup priority (0)
- * XXY for group priority(0->3), subgroup priority (0->1)
- * XYY for group priority(0->1), subgroup priority (0->3)
- * YYY for group priority(0)	 , subgroup priority (0->7)
- */
-#define PRIGROUPING                                 XXY
-
+#define GPT_PREDEF_TIMER_1US_16BIT
+#define GPT_PREDEF_TIMER_1US_24BIT
+#define GPT_PREDEF_TIMER_1US_32BIT
+#define GPT_PREDEF_TIMER_100US_32BIT
 /**************************************************************************************************
  *	GLOBAL FUNCTION MACROS
  *************************************************************************************************/
-
+ 
 /**************************************************************************************************
  *	GLOBAL DATA TYPES AND STRUCTURES
  *************************************************************************************************/
-extern const IntCtrl_ConfigType intCtrl_Cofig[ACTIVATED_INT_NUM];
+typedef enum
+{
+    Gpt_Timer0 = 0x40030000u,
+    Gpt_Timer1 = 0x40031000u,
+    Gpt_Timer2 = 0x40032000u,
+    Gpt_Timer3 = 0x40033000u,
+    Gpt_Timer4 = 0x40034000u,
+    Gpt_Timer5 = 0x40035000u,
 
+    Gpt_WideTimer0 = 0x40036000u,
+    Gpt_WideTimer1 = 0x40037000u,
+    Gpt_WideTimer2 = 0x4004C000u,
+    Gpt_WideTimer3 = 0x4004D000u,
+    Gpt_WideTimer4 = 0x4004E000u,
+    Gpt_WideTimer5 = 0x4004F000u
+    
+} Gpt_ChannelType;
+
+typedef uint32 Gpt_ValueType;
+
+typedef enum
+{
+    Gpt_OneShot = 1u,
+    Gpt_Periodic = 2u
+    
+} Gpt_ModeType;
+
+typedef struct
+{
+    Gpt_ChannelType channelID;
+		uint8 padding[3];
+    Gpt_ModeType channelMode;
+
+} Gpt_ConfigType;
+
+typedef void (*Gpt_Notification)(void);
  
 
- #endif    /* INTCTRL_CFG_H */
+ #endif    /* GPT_TYPES_H */
  
 /**************************************************************************************************
- *	END OF FILE:	IntCtrl_Cfg.h
+ *	END OF FILE:	Gpt_Types.h
  *************************************************************************************************/

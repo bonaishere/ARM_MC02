@@ -12,7 +12,8 @@
 /**************************************************************************************************
  *	INCLUDES
  *************************************************************************************************/
- #include "Port_Cfg.h"
+#include "SysCytrl_Cfg.h"
+
 /**************************************************************************************************
  *	LOCAL MACROS CONSTANT\FUNCTION
  *************************************************************************************************/
@@ -24,14 +25,7 @@
 /**************************************************************************************************
  *	GLOBAL DATA
  *************************************************************************************************/
- //configrations array
-const Port_ConfigType Port_Config[ACTICATED_PINS_NUM]=
-{
-    //channel     direction       mode             internal attach                output current
-    //{Port_Pin_F0, Port_PinInput,  Port_PinDigital, Port_PinPullUp,                Port_PinOutputCurrentDefault},
-    //{Port_Pin_F4, Port_PinInput,  Port_PinDigital, Port_PinPullUp,                Port_PinOutputCurrentDefault},
-    {Port_Pin_F2, Port_PinOutput, Port_PinDigital, Port_PinInternalAttachDefault, Port_4ma}
-};
+ 
 /**************************************************************************************************
  *	LOCAL FUNCTION PROTOTYPES
  *************************************************************************************************/
@@ -43,7 +37,28 @@ const Port_ConfigType Port_Config[ACTICATED_PINS_NUM]=
 /**************************************************************************************************
  *	GLOBAL FUNCTIONS
  *************************************************************************************************/
+ //configrations array
+const SysCtrl_ConfigType SysCtrl_Config[ACTICATED_PERIPHIRALS_NUM] =
+{
+    // Peripheral to be enables
+    {SysCtrl_GPIOF_Enable},
+    {SysCtrl_16_32_Timer1_Enable}
+
+};
+ 
+/********************************************************************
+ *	\Syntax				:
+ *	\Description		:
+ *
+ *	\Sync\Async			:
+ *	\Reentrancy			:
+ *	\Parameters (in)	:
+ *	\Parameters (out)	:
+ *	\Return value		:
+ *
+ *******************************************************************/
+ 
  
 /**************************************************************************************************
- *	END OF FILE:
+ *	END OF FILE:    SysCtrl_Cfg.c
  *************************************************************************************************/

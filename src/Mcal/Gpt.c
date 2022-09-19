@@ -12,7 +12,7 @@
 /**************************************************************************************************
  *	INCLUDES
  *************************************************************************************************/
- #include "Port.h"
+#include "Gpt.h"
 /**************************************************************************************************
  *	LOCAL MACROS CONSTANT\FUNCTION
  *************************************************************************************************/
@@ -20,18 +20,17 @@
 /**************************************************************************************************
  *	LOCAL DATA
  *************************************************************************************************/
- 
+ Gpt_Notification callBacksArray[12] = {NULL};
+
 /**************************************************************************************************
  *	GLOBAL DATA
  *************************************************************************************************/
  
 /**************************************************************************************************
  *	LOCAL FUNCTION PROTOTYPES
- *************************************************************************************************/
- void Port_SetPinDirection(const Port_ConfigType *ConfigPtr);
- void Port_SetPinMode(const Port_ConfigType *ConfigPtr);
- void Port_SetPinInternalAttach(const Port_ConfigType *ConfigPtr);
- void Port_SetPinOutputCurrent(const Port_ConfigType *ConfigPtr);
+ *************************************************************************************************/ 
+ void Gpt_SetTimerModuleInit(Gpt_ConfigType *ConfigPtr);
+ void Gpt_SetTimerMode(Gpt_ConfigType *ConfigPtr);
 
 /**************************************************************************************************
  *	LOCAL FUNCTIONS
@@ -40,7 +39,6 @@
 /**************************************************************************************************
  *	GLOBAL FUNCTIONS
  *************************************************************************************************/
- 
  
 /********************************************************************
  *	\Syntax				:
@@ -53,18 +51,19 @@
  *	\Return value		:
  *
  *******************************************************************/
- void Port_Init()
+ void Gpt_Init()
  {
-    for (int i = 0; i < ACTICATED_PINS_NUM; i++)
+    for (uint16 i = 0; i < ACTIVATED_TIMERS_NUM; i++)
     {
-        Port_SetPinDirection(&Port_Config[i]);
-        Port_SetPinMode(&Port_Config[i]);
-        Port_SetPinInternalAttach(&Port_Config[i]);
-        Port_SetPinOutputCurrent(&Port_Config[i]);
+        Gpt_SetTimerModuleInit(&gpt_config[i]);
+        Gpt_SetTimerMode(&gpt_config[i]);
     }
-    
+
+    // #if(GPT_PREDEF_TIMER_1US_16BIT)
+    // //enable GPT_PREDEF_TIMER_1US_16BIT at value 0
+    // #endif
  }
- 
+
   
 /********************************************************************
  *	\Syntax				:
@@ -77,88 +76,31 @@
  *	\Return value		:
  *
  *******************************************************************/
-void Port_SetPinDirection(const Port_ConfigType *ConfigPtr)
+void Gpt_SetTimerModuleInit(Gpt_ConfigType *ConfigPtr)
 {
-    uint32 port = (GPIO_COMMON_BASE | (ConfigPtr->pin >> 4u));
-    uint32 pin = (ConfigPtr->pin & 0xfu);
+    // uint32 timer = 0x40000000u | ((uint32)(ConfigPtr->channelID)<<12u);
 
-    // uint32 port = (GPIO_COMMON_BASE | (ConfigPtr->pin & SECOND_2BITS_MASK));
-    // uint32 pin = (ConfigPtr->pin & FIRST_2BITS_MASK);
-
-    if(ConfigPtr->direction)
-    {
-        GPIO(port)->GPIODIR |= (1<<pin);        /*Output by setting the pin*/
-    }
-    else
-    {
-        GPIO(port)->GPIODIR &= ~(1<<pin);       /*Input by clearing the pin*/
-    }
+    //Disable timer
+    TIMER(ConfigPtr->channelID)->GPTMCTL = 0;
+    //None Concatenated
+    TIMER(ConfigPtr->channelID)->GPTMCFG = 0x00u;
+    //CountDown
+    TIMER(ConfigPtr->channelID)->GPTMTAMR &= ~(1u << 4u);
+    //Disable Interrupts
+    // TIMER(ConfigPtr->channelID)->GPTMIMR = 0;
 }
 
-/********************************************************************
- *	\Syntax				:
- *	\Description		:
- *
- *	\Sync\Async			:
- *	\Reentrancy			:
- *	\Parameters (in)	:
- *	\Parameters (out)	:
- *	\Return value		:
- *
- *******************************************************************/
-void Port_SetPinMode(const Port_ConfigType *ConfigPtr)
+void Gpt_SetTimerMode(Gpt_ConfigType *ConfigPtr)
 {
-    uint32 port = (GPIO_COMMON_BASE | (ConfigPtr->pin >> 4u));
-    uint32 pin = (ConfigPtr->pin & 0xfu);
+    // uint32 timer = 0x40000000u | ((uint32)(ConfigPtr->channelID)<<12u);
 
-    // uint32 port = (GPIO_COMMON_BASE | (ConfigPtr->pin & SECOND_2BITS_MASK));
-    // uint32 pin = (ConfigPtr->pin & FIRST_2BITS_MASK);
-
-    if(ConfigPtr->mode)
+    switch (ConfigPtr->channelMode)
     {
-        GPIO(port)->GPIOAFSEL |= (1<<pin);
-        GPIO(port)->GPIOPCTL  |= (ConfigPtr->mode<<(4*pin));
-    }
-    else
-    {
-        GPIO(port)->GPIOAFSEL &=~(1<<pin);      /*GPIO mode*/
-    }
-}
-
-/********************************************************************
- *	\Syntax				:
- *	\Description		:
- *
- *	\Sync\Async			:
- *	\Reentrancy			:
- *	\Parameters (in)	:
- *	\Parameters (out)	:
- *	\Return value		:
- *
- *******************************************************************/
-void Port_SetPinInternalAttach(const Port_ConfigType *ConfigPtr)
-{
-    uint32 port = (GPIO_COMMON_BASE | (ConfigPtr->pin >> 4u));
-    uint32 pin = (ConfigPtr->pin & 0xfu);
-
-    // uint32 port = (GPIO_COMMON_BASE | (ConfigPtr->pin & SECOND_2BITS_MASK));
-    // uint32 pin = (ConfigPtr->pin & FIRST_2BITS_MASK);
-
-    switch (ConfigPtr->internalAttach)
-    {
-    case Port_PinOpenDrain:
-        GPIO(port)->GPIOODR |= (1<<pin);
+    case Gpt_OneShot:
+        TIMER(ConfigPtr->channelID)->GPTMTAMR |= 1u << 0u;
         break;
-
-    case Port_PinPullUp:
-        GPIO(port)->GPIOPUR |= (1<<pin);
-    break;
-    
-    case Port_PinPullDown:
-        GPIO(port)->GPIOPDR |= (1<<pin);
-    break;
-    
-    default:
+    case Gpt_Periodic:
+        TIMER(ConfigPtr->channelID)->GPTMTAMR |= 1u << 1u;
         break;
     }
 }
@@ -174,33 +116,90 @@ void Port_SetPinInternalAttach(const Port_ConfigType *ConfigPtr)
  *	\Return value		:
  *
  *******************************************************************/
-void Port_SetPinOutputCurrent(const Port_ConfigType *ConfigPtr)
+ void Gpt_EnableNotification(Gpt_ConfigType *ConfigPtr, Gpt_Notification callBackPtr)
 {
-    uint32 port = (GPIO_COMMON_BASE | (ConfigPtr->pin >> 4u));
-    uint32 pin = (ConfigPtr->pin & 0xfu);
-
-    // uint32 port = (GPIO_COMMON_BASE | (ConfigPtr->pin & SECOND_2BITS_MASK));
-    // uint32 pin = (ConfigPtr->pin & FIRST_2BITS_MASK);
-
-    switch (ConfigPtr->outputcurrent)
-    {
-    case Port_2ma:
-        GPIO(port)->GPIODR2R |= (1<<pin);
-        break;
-
-    case Port_4ma:
-        GPIO(port)->GPIODR4R |= (1<<pin);
-    break;
+//   uint32 timer = 0x40000000u | ((uint32)(ConfigPtr->channelID)<<12u);
+  uint8 j=0;
+	Gpt_ChannelType i=Gpt_Timer0;
     
-    case Port_8ma:
-        GPIO(port)->GPIODR8R |= (1<<pin);
-    break;
-    
-    default:
-        break;
+	/* set call back to global array*/
+	
+	while(i <= Gpt_WideTimer5)
+	{
+		callBacksArray[j] = callBackPtr;
+		i++;
+        
+		if (i==Gpt_WideTimer1)
+			{
+				i=Gpt_WideTimer2;
+			}
+			j++;
+	}
+		
+  TIMER(ConfigPtr->channelID)->GPTMIMR |= 1;         /*enable time out interrupt*/
+}
+
+
+/********************************************************************
+ *	\Syntax				:
+ *	\Description		:
+ *
+ *	\Sync\Async			:
+ *	\Reentrancy			:
+ *	\Parameters (in)	:
+ *	\Parameters (out)	:
+ *	\Return value		:
+ *
+ *******************************************************************/
+void Gpt_DisableNotification(Gpt_ConfigType *ConfigPtr)
+{
+    // uint32 timer = 0x40000000u | ((uint32)(ConfigPtr->channelID)<<12u);
+    TIMER(ConfigPtr->channelID)->GPTMICR = 0x10F1F;        /*disable interrupts*/
+}
+
+/********************************************************************
+ *	\Syntax				:
+ *	\Description		:
+ *
+ *	\Sync\Async			:
+ *	\Reentrancy			:
+ *	\Parameters (in)	:
+ *	\Parameters (out)	:
+ *	\Return value		:
+ *
+ *******************************************************************/
+void Gpt_StartTimer(Gpt_ConfigType *ConfigPtr, Gpt_ValueType loadValue)
+{
+    // uint32 timer = 0x40000000u | ((uint32)(ConfigPtr->channelID)<<12u);
+
+    TIMER(ConfigPtr->channelID)->GPTMTAILR = loadValue * 0xF423FF;
+    TIMER(ConfigPtr->channelID)->GPTMICR |= (1<<0);        /* TimerA timeout flag bit clears*/
+    // TIMER(ConfigPtr->channelID)->GPTMCTL |= (1u << 0);
+}
+
+/********************************************************************
+ *	\Syntax				:
+ *	\Description		:
+ *
+ *	\Sync\Async			:
+ *	\Reentrancy			:
+ *	\Parameters (in)	:
+ *	\Parameters (out)	:
+ *	\Return value		:
+ *
+ *******************************************************************/
+void TIMER1A_Handler(void)
+{
+
+    Gpt_Notification callback = callBacksArray[1];
+
+    if (callback != NULL)
+    {   
+        TIMER1->GPTMICR |= 1 << 0;      /*clear interrupt status flag*/
+        callback();                     /*jump to callback*/
     }
 }
 
 /**************************************************************************************************
- *	END OF FILE:
+ *	END OF FILE:    Gpt.c
  *************************************************************************************************/

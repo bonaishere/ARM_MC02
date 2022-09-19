@@ -12,7 +12,7 @@
 /**************************************************************************************************
  *	INCLUDES
  *************************************************************************************************/
- #include "Port_Cfg.h"
+#include "SysCtrl.h"
 /**************************************************************************************************
  *	LOCAL MACROS CONSTANT\FUNCTION
  *************************************************************************************************/
@@ -24,14 +24,7 @@
 /**************************************************************************************************
  *	GLOBAL DATA
  *************************************************************************************************/
- //configrations array
-const Port_ConfigType Port_Config[ACTICATED_PINS_NUM]=
-{
-    //channel     direction       mode             internal attach                output current
-    //{Port_Pin_F0, Port_PinInput,  Port_PinDigital, Port_PinPullUp,                Port_PinOutputCurrentDefault},
-    //{Port_Pin_F4, Port_PinInput,  Port_PinDigital, Port_PinPullUp,                Port_PinOutputCurrentDefault},
-    {Port_Pin_F2, Port_PinOutput, Port_PinDigital, Port_PinInternalAttachDefault, Port_4ma}
-};
+ 
 /**************************************************************************************************
  *	LOCAL FUNCTION PROTOTYPES
  *************************************************************************************************/
@@ -43,6 +36,46 @@ const Port_ConfigType Port_Config[ACTICATED_PINS_NUM]=
 /**************************************************************************************************
  *	GLOBAL FUNCTIONS
  *************************************************************************************************/
+ 
+ 
+/********************************************************************
+ *	\Syntax				:
+ *	\Description		:
+ *
+ *	\Sync\Async			:
+ *	\Reentrancy			:
+ *	\Parameters (in)	:
+ *	\Parameters (out)	:
+ *	\Return value		:
+ *
+ *******************************************************************/
+ void SysCtrl_Init(void)
+{
+	uint32 i;
+
+	uint32 bitOffset = 0;
+	uint32 regOffset = 0;
+
+	volatile uint32 *RCGC = 0;
+	volatile uint32 *PR = 0;
+
+	/* enabling clock gateing for require peripherals */
+	for (i = 0; i < ACTICATED_PERIPHIRALS_NUM; i++)
+	{
+		/* get the required RCGC register for this peripheral */
+		regOffset = (SysCtrl_Config[i].enebledPeriphiral) >> 4u;
+
+		/* get the required bit in RCGC and PR registers */
+		bitOffset = SysCtrl_Config[i].enebledPeriphiral & 0xfu;
+
+		/* assign the sequired RCGC and PR registers */
+		RCGC = (volatile uint32 *)((SysCtrl_BASE) + (RCGC_OFFSET) + (regOffset));
+		PR = (volatile uint32 *)((SysCtrl_BASE) + (PR_OFFSET) + (regOffset));
+
+		/* enable clock gating for the peripheral */
+		*RCGC |= 1u << (uint32)bitOffset;
+	}
+}
  
 /**************************************************************************************************
  *	END OF FILE:

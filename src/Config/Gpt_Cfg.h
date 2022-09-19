@@ -1,34 +1,24 @@
 /**************************************************************************************************
  *	FILE DESCRIPTION
  *	-----------------------------------------------------------------------------------------------
- *	       File:	IntCtrl_Cfg.h
+ *	       File:	Gpt_Cfg.h
  *	     Module:
  *
  *	Description:
  *
  *
  *************************************************************************************************/
-#ifndef INTCTRL_CFG_H
-#define INTCTRL_CFG_H
-
+#ifndef GPT_CFG_H
+#define GPT_CFG_H
 /**************************************************************************************************
  *	INCLUDES
  *************************************************************************************************/
 #include "Mcu_Hw.h"
-#include "IntCtrl_Types.h" 
-
+#include "Gpt_Types.h"
 /**************************************************************************************************
  *	GLOBAL CONSTANT MACROS
  *************************************************************************************************/
-#define ACTIVATED_INT_NUM                           (2u)
-
-/*
- * XXX for group priority(0->7), subgroup priority (0)
- * XXY for group priority(0->3), subgroup priority (0->1)
- * XYY for group priority(0->1), subgroup priority (0->3)
- * YYY for group priority(0)	 , subgroup priority (0->7)
- */
-#define PRIGROUPING                                 XXY
+#define ACTIVATED_TIMERS_NUM                    (1u)
 
 /**************************************************************************************************
  *	GLOBAL FUNCTION MACROS
@@ -37,12 +27,12 @@
 /**************************************************************************************************
  *	GLOBAL DATA TYPES AND STRUCTURES
  *************************************************************************************************/
-extern const IntCtrl_ConfigType intCtrl_Cofig[ACTIVATED_INT_NUM];
+extern Gpt_ConfigType gpt_config[ACTIVATED_TIMERS_NUM];
 
  
 
- #endif    /* INTCTRL_CFG_H */
+ #endif    /* GPT_CFG_H */
  
 /**************************************************************************************************
- *	END OF FILE:	IntCtrl_Cfg.h
+ *	END OF FILE:	Gpt_Cfg.h
  *************************************************************************************************/

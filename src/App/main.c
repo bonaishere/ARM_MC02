@@ -1,32 +1,119 @@
+/**************************************************************************************************
+ *	FILE DESCRIPTION
+ *	---------------------------------------------------------------------------------------------*/
+/**		\file
+ *		\brief
+ *
+ *		\details
+ *
+ *
+ *************************************************************************************************/
+  
+/**************************************************************************************************
+ *	INCLUDES
+ *************************************************************************************************/
+#include "Mcu_Hw.h"
+#include "Dio.h"
+#include "SysCtrl.h"
 #include "IntCtrl.h"
-
-int main(void)
-{
-	IntCtrl_Init();
-	while(1)
-	{
-	
-	}
-	
-	return 0;
-}#include "IntCtrl.h"
-#include "Mcu.h"
+#include "Gpt.h"
 #include "Port.h"
-#include "DIO.h"
-#include "Timer.h"
-int main(void)
-{
-	
-	Mcu_Init(&Mcu_ConfigTypeStruct);
-	Mcu_InitClock(ACTIVE_CLOCK_CONFIG_MODE);
-	Mcu_DistributePllClock();
+/**************************************************************************************************
+ *	LOCAL MACROS CONSTANT\FUNCTION
+ *************************************************************************************************/
+ 
+/**************************************************************************************************
+ *	LOCAL DATA
+ *************************************************************************************************/
+ 
+/**************************************************************************************************
+ *	GLOBAL DATA
+ *************************************************************************************************/
+uint8 onTime = 3;
+uint8 offTime = 1;
+/**************************************************************************************************
+ *	LOCAL FUNCTION PROTOTYPES
+ *************************************************************************************************/
+ void blink(void);
+/**************************************************************************************************
+ *	LOCAL FUNCTIONS
+ *************************************************************************************************/
+ 
+/**************************************************************************************************
+ *	GLOBAL FUNCTIONS
+ *************************************************************************************************/
+
+/********************************************************************
+ *	\Syntax				:
+ *	\Description		:
+ *
+ *	\Sync\Async			:
+ *	\Reentrancy			:
+ *	\Parameters (in)	:
+ *	\Parameters (out)	:
+ *	\Return value		:
+ *
+ *******************************************************************/
+int main(){
+	//uint32 i=0;
+
 	IntCtrl_Init();
-	Port_Init(Port_Config);
-	Gpt_Init(Gpt_Config);
-	while(1){
-        Gpt_Init(Gpt_Config);
-		Gpt_EnableNotification(Gpt_Channel_0);
-        }
-        
-	return 0;
+	SysCtrl_Init();
+	Port_Init();
+	Gpt_Init();
+
+	Gpt_EnableNotification(&gpt_config[0], blink);
+	Gpt_StartTimer(&gpt_config[0], offTime);
+
+	// for ( i = 0; i < ACTIVATED_TIMERS_NUM; i++)
+	// {
+	// 	Gpt_EnableNotification(&gpt_config[i], blink);
+	// 	Gpt_StartTimer(&gpt_config[i], offTime);
+	// }
+	
+	GPIOF->GPIODIR |= (1<<2);
+	GPIOF->GPIODATA[2] = 0x1u;
+
+	for(;;){}
 }
+
+/********************************************************************
+ *	\Syntax				:
+ *	\Description		:
+ *
+ *	\Sync\Async			:
+ *	\Reentrancy			:
+ *	\Parameters (in)	:
+ *	\Parameters (out)	:
+ *	\Return value		:
+ *
+ *******************************************************************/
+void blink(){
+	//uint32 i=0;
+	
+	if (Dio_ReadChannel(Dio_Channel_F2) == Dio_Low){
+		Dio_FlipChannel(Dio_Channel_F2);
+		Gpt_StartTimer(&gpt_config[0], onTime);
+	}
+	else{
+		Dio_FlipChannel(Dio_Channel_F2);
+		Gpt_StartTimer(&gpt_config[0], offTime);
+	}
+
+	// for ( i = 0; i < ACTIVATED_TIMERS_NUM; i++)
+	// {
+	// 	if (Dio_ReadChannel(Dio_Channel_F2) == Dio_Low){
+	// 		Dio_FlipChannel(Dio_Channel_F2);
+	// 		Gpt_StartTimer(&gpt_config[i], onTime);
+	// 	}
+	// 	else{
+	// 		Dio_FlipChannel(Dio_Channel_F2);
+	// 		Gpt_StartTimer(&gpt_config[i], offTime);
+	// 	}
+	// }
+	
+} 
+ 
+/**************************************************************************************************
+ *	END OF FILE:
+ *************************************************************************************************/
