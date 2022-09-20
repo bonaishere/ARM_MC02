@@ -25,7 +25,7 @@ int main(void)
 	while(1)
 	{
 
-		LedOnPWM_Period(1000 , 500);
+		LedOnPWM_Period(4000 , 500);
 
 	}
 }
