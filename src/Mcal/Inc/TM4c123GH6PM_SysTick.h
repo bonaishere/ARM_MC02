@@ -1,25 +1,16 @@
-/**********************************************************************************************************************
- *  FILE DESCRIPTION
- *  -------------------------------------------------------------------------------------------------------------------
- *         File:  Dio.h
- *       Module:  -
- *
- *  Description:  <Write File DESCRIPTION here>     
- *  
- *********************************************************************************************************************/
-#ifndef DIO_H
-#define DIO_H
+#ifndef SRC_MCAL_INC_TM4C123GH6PM_SYSTICK_H_
+#define SRC_MCAL_INC_TM4C123GH6PM_SYSTICK_H_
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
-#include "Std_Types.h"
-#include "Dio_Types.h"
-#include "Port_Types.h"
+#include "../../Common/Std_Types.h"
+#include "../../Common/Mcu_Hw.h"
+
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
-extern const Port_ConfigType Dio_Config;
+
 /**********************************************************************************************************************
  *  GLOBAL FUNCTION MACROS
  *********************************************************************************************************************/
@@ -28,15 +19,43 @@ extern const Port_ConfigType Dio_Config;
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
-Dio_LevelType Dio_ReadChannel(Port_ChannelType ChannelId);
-void Dio_WriteChannel(Port_ChannelType ChannelId,Dio_LevelType Level);
-Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId);
-void Dio_WritePort(Dio_PortType PortId,Dio_PortLevelType Level);
-Dio_LevelType Dio_FlipChannel(Port_ChannelType ChannelId);
+//@ref SystTick_ClkSrc_Define
+typedef enum
+{
+	PIOSC_Quarter,			//PIOSC/4  = 4MHZ
+	System_CLK
+
+}Systick_ClkSrcType;
 
 
-#endif  /* DIO_H */
+typedef struct
+{
+	Systick_ClkSrcType 		ClkSource;		//@ref SystTick_ClkSrc_Define
+	uint8					IRQEnable;		//@ref IR_Enable_Define
+}SysTick_ConfigType;
+
+
+
+//-----------------------------
+//Macros Configuration References
+//-----------------------------
+
+
+//@ref IR_Enable_Define
+#define IRQ_Enable		1
+#define IRQ_Disable		0
+
 
 /**********************************************************************************************************************
- *  END OF FILE: DIO.h
+ *  GLOBAL DATA PROTOTYPES
  *********************************************************************************************************************/
+
+
+/**********************************************************************************************************************
+ *  GLOBAL FUNCTION PROTOTYPES
+ *********************************************************************************************************************/
+void SysTick_init (SysTick_ConfigType * SysTickConfig);
+void StartSysTick (uint32 Seconds_ms);
+void StopSysTick (void);
+
+#endif /* SRC_MCAL_INC_TM4C123GH6PM_SYSTICK_H_ */

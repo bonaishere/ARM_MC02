@@ -1,21 +1,23 @@
 /**********************************************************************************************************************
  *  FILE DESCRIPTION
  *  -------------------------------------------------------------------------------------------------------------------
- *  File:  IntCtrl_Types.h
- *  Module:  -
+ *         File:  TM4C123GH6PM_GPIO.h
+ *       Module:  -GPIO
  *
- *  Description:  <Write File DESCRIPTION here>
+ *  Description:  GPIO Driver for TM4C123GH6PM
  *
  *********************************************************************************************************************/
 
-#ifndef SRC_MCAL_INC_INTCTRL_TYPES_H_
-#define SRC_MCAL_INC_INTCTRL_TYPES_H_
+
+#ifndef SRC_MCAL_INC_TM4C123GH6PM_GPIO_H_
+#define SRC_MCAL_INC_TM4C123GH6PM_GPIO_H_
 
 
 /**********************************************************************************************************************
  * INCLUDES
  *********************************************************************************************************************/
-
+#include "../../Common/Std_Types.h"
+#include "../../Common/Mcu_Hw.h"
 
 /**********************************************************************************************************************
  *  GLOBAL CONSTANT MACROS
@@ -26,94 +28,104 @@
  *  GLOBAL FUNCTION MACROS
  *********************************************************************************************************************/
 
-
 /**********************************************************************************************************************
  *  GLOBAL DATA TYPES AND STRUCTURES
  *********************************************************************************************************************/
-
-typedef enum {
-	GPIOA_IRQ,
-	GPIOB_IRQ,
-	GPIOC_IRQ,
-	GPIOD_IRQ,
-	GPIOE_IRQ,
-	Timer0A_16_IRQ =19,
-	Timer0B_16_IRQ ,
-	Timer1A_16_IRQ ,
-	Timer1B_16_IRQ ,
-	Timer2A_16_IRQ ,
-	Timer2B_16_IRQ,
-	Timer3A_16_IRQ =35,
-	Timer3B_16_IRQ,
-	Timer4A_16_IRQ =70,
-	Timer4B_16_IRQ,
-	Timer5A_16_IRQ =92,
-	Timer5B_16_IRQ,
-	Timer0A_32_IRQ=94,
-	Timer0B_32_IRQ,
-	Timer1A_32_IRQ,
-	Timer1B_32_IRQ,
-	Timer2A_32_IRQ,
-	Timer2B_32_IRQ,
-	Timer3A_32_IRQ,
-	Timer3B_32_IRQ,
-	Timer4A_32_IRQ,
-	Timer4B_32_IRQ,
-	Timer5A_32_IRQ,
-	Timer5B_32_IRQ
-}IntCtrl_InterruptType;
+//@ref Port_PinType_define
 
 
-typedef enum {
-	Group0_SubGroup0,
-	Group1_SubGroup0,
-	Group2_SubGroup0,
-	Group3_SubGroup0,
-	Group4_SubGroup0,
-	Group5_SubGroup0,
-	Group6_SubGroup0,
-	Group7_SubGroup0,
+typedef enum
+{
+	Dio_PortA_PA0,
+	Dio_PortA_PA1,
+	Dio_PortA_PA2,
+	Dio_PortA_PA3,
+	Dio_PortA_PA4,
+	Dio_PortA_PA5,
+	Dio_PortA_PA6,
+	Dio_PortA_PA7,
 
-	Group1_SubGroup1,
-	Group2_SubGroup1,
-	Group3_SubGroup1,
+	Dio_PortB_PB0,
+	Dio_PortB_PB1,
+	Dio_PortB_PB2,
+	Dio_PortB_PB3,
+	Dio_PortB_PB4,
+	Dio_PortB_PB5,
+	Dio_PortB_PB6,
+	Dio_PortB_PB7,
 
-	Group0_SubGroup1=16,
-	Group0_SubGroup2,
-	Group0_SubGroup3,
-	Group1_SubGroup2,
-	Group1_SubGroup3,
+	Dio_PortC_PC0,
+	Dio_PortC_PC1,
+	Dio_PortC_PC2,
+	Dio_PortC_PC3,
+	Dio_PortC_PC4,
+	Dio_PortC_PC5,
+	Dio_PortC_PC6,
+	Dio_PortC_PC7,
 
-	Group0_SubGroup4=24,
-	Group0_SubGroup5,
-	Group0_SubGroup6,
-	Group0_SubGroup7
+	Dio_PortD_PD0,
+	Dio_PortD_PD1,
+	Dio_PortD_PD2,
+	Dio_PortD_PD3,
+	Dio_PortD_PD4,
+	Dio_PortD_PD5,
+	Dio_PortD_PD6,
+	Dio_PortD_PD7,
 
-}IntCtrl_Group_SubGroup;
+	Dio_PortE_PE0,
+	Dio_PortE_PE1,
+	Dio_PortE_PE2,
+	Dio_PortE_PE3,
+	Dio_PortE_PE4,
+	Dio_PortE_PE5,
 
-typedef enum {
-	Group_Priority0,
-	Group_Priority1,
-	Group_Priority2,
-	Group_Priority3,
-	Group_Priority4,
-	Group_Priority5,
-	Group_Priority6,
-	Group_Priority7
+	Dio_PortF_PF0 =40,
+	Dio_PortF_PF1,
+	Dio_PortF_PF2,
+	Dio_PortF_PF3,
+	Dio_PortF_PF4
+}Dio_ChannelType;
 
-}IntCtrl_GroupPriority;
+typedef struct
+{
+	Dio_ChannelType PortPinType;			//specifies the GPIO pin Number to be configured.
+	//this parameter must be set based on a value @ref Port_PinType_define
 
-typedef enum {
-	SubGroup_Priority0,
-	SubGroup_Priority1,
-	SubGroup_Priority2,
-	SubGroup_Priority3,
-	SubGroup_Priority4,
-	SubGroup_Priority5,
-	SubGroup_Priority6,
-	SubGroup_Priority7
+	uint8 PortPinMode ;			//specifies the GPIO pin Mode to be configured.
+	//this parameter must be set based on a value @ref Port_PinMode_define
 
-}IntCtrl_SubGroupPriority;
+	uint8 PortPinLevelValue ;		//specifies the GPIO pin Level to be configured.
+	//this parameter must be set based on a value @ref Port_PinLevel_define
+
+	uint8 PortPinDirection ;		//specifies the GPIO pin Direction to be configured.
+	//this parameter must be set based on a value @ref Port_PinDir_define
+
+	uint8 PortPinInternalAttach ;	//specifies the GPIO pin internal pull up or pull down attach to be configured.
+	//this parameter must be set based on a value @ref Port_PinAttach_define
+
+	uint8 PortPinOutputCurrent ;	//specifies the GPIO pin output current to be configured.
+	//this parameter must be set based on a value @ref Port_PinOutCurrent_define
+
+}Port_ConfigType;
+
+typedef enum
+{
+	Low,
+	High
+}Dio_LevelType;
+
+
+typedef enum
+{
+	Pin0,
+	Pin1,
+	Pin2,
+	Pin3,
+	Pin4,
+	Pin5,
+	Pin6,
+	Pin7
+}PinNum;
 
 /**********************************************************************************************************************
  *  GLOBAL DATA PROTOTYPES
@@ -125,8 +137,7 @@ typedef enum {
  *********************************************************************************************************************/
 
 
-#endif /* SRC_MCAL_INC_INTCTRL_TYPES_H_ */
-
+#endif /* SRC_MCAL_INC_TM4C123GH6PM_GPIO_H_ */
 
 /**********************************************************************************************************************
  *  END OF FILE: Std_Types.h
