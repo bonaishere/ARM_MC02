@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\HAL",
+    "\\HAL\\Inc",
+    "\\LIBRARIES",
+    "\\LIBRARIES\\Common",
+    "\\LIBRARIES\\Configuration",
+    "\\MCAL",
+    "\\MCAL\\Inc",
+    "\\SERVICES",
+    "\\SERVICES\\Inc"
+  ],
+  "SelectedNode": "\\MCAL\\Inc\\IntCtrl.h",
+  "PreviewInSolutionExplorer": false
+}
